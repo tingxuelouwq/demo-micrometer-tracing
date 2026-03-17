@@ -3,6 +3,20 @@ spring:
     name: demo-micrometer-tracing
 
 management:
+  # ==================== Prometheus 指标配置 ====================
+  endpoints:
+    web:
+      exposure:
+        # 暴露 prometheus 端点，也可暴露所有端点: "*"
+        include: health,info,prometheus,metrics
+      base-path: /actuator  # 端点基础路径
+  metrics:
+    tags:
+      application: ${spring.application.name}  # 为所有指标添加应用标签
+    distribution:
+      percentiles-histogram:
+        http.server.requests: true  # 启用 HTTP 请求直方图
+  # ==================== 链路追踪配置====================
   tracing:
     sampling:
       probability: 1.0
