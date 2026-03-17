@@ -1,7 +1,16 @@
 spring:
   application:
     name: demo-micrometer-tracing
-
+  # ==================== Kafka Producer 配置 (可选，用于业务消息) ====================
+  kafka:
+    producer:
+      bootstrap-servers: localhost:9092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+      acks: 1
+      retries: 3
+      batch-size: 16384
+      buffer-memory: 33554432
 management:
   # ==================== Prometheus 指标配置 ====================
   endpoints:
@@ -23,3 +32,8 @@ management:
     export:
       zipkin:
         endpoint: http://localhost:9411/api/v2/spans
+# ==================== Kafka 日志配置 ====================
+logging:
+  kafka:
+    bootstrap-servers: localhost:9092
+    topic: app-logs-${spring.application.name}

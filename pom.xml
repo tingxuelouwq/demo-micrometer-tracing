@@ -56,5 +56,27 @@
             <groupId>io.micrometer</groupId>
             <artifactId>micrometer-registry-prometheus</artifactId>
         </dependency>
+
+        <!-- ==================== Kafka 日志收集依赖 ==================== -->
+        <!-- logback-kafka-appender: 将日志发送至 Kafka -->
+        <dependency>
+            <groupId>com.github.danielwegener</groupId>
+            <artifactId>logback-kafka-appender</artifactId>
+            <version>0.2.0-RC2</version>
+            <scope>compile</scope>
+        </dependency>
+
+        <!-- logstash-logback-encoder: 提供 JSON 格式编码，方便 Logstash 解析 -->
+        <dependency>
+            <groupId>net.logstash.logback</groupId>
+            <artifactId>logstash-logback-encoder</artifactId>
+            <version>7.4</version>
+        </dependency>
+
+        <!-- Kafka 客户端（logback-kafka-appender 需要） -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency>
     </dependencies>
 </project>
