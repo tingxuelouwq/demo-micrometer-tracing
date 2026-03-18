@@ -66,10 +66,4 @@
     <!-- 避免 Kafka 客户端自身的日志递归发送 -->
     <logger name="org.apache.kafka" level="WARN"/>
     <logger name="com.github.danielwegener.logback.kafka" level="WARN"/>
-
-    <!-- Spring 框架日志 -->
-    <logger name="org.springframework" level="INFO"/>
-
-    <!-- 应用包日志 -->
-    <logger name="com.kevin" level="DEBUG"/>
 </configuration>
