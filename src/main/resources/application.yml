@@ -1,3 +1,6 @@
+server:
+  port: 8090
+
 spring:
   application:
     name: demo-micrometer-tracing
@@ -13,6 +16,25 @@ spring:
         health-check-interval: 10s
         prefer-ip-address: true
         query-passing: true
+
+# ==================== Resilience4j 熔断限流配置 ====================
+resilience4j:
+  circuitbreaker:
+    # 熔断降级全局默认配置
+    configs:
+      default:
+        # 熔断触发条件
+        sliding-window-size: 100  # 基于最近100次请求计算失败率
+        failure-rate-threshold: 50  # 失败率阈值：50%请求失败时熔断
+        slow-call-rate-threshold: 80  # 慢调用阈值：80%请求为慢调用时熔断
+        slow-call-duration-threshold: 2s  # 慢调用定义：超过2秒视为慢调用
+        # 熔断持续时间
+        wait-duration-in-open-state: 10s  # 熔断后等待10秒进入半开状态
+        automatic-transition-from-open-to-half-open-enabled: true # 熔断器打开后，等待时间一到自动切换到HALF_OPEN，无需等待请求触发
+        permitted-number-of-calls-in-half-open-state: 10  # 半开状态允许10个试探请求
+        event-consumer-buffer-size: 10  # 存储熔断器状态变更事件的环形缓冲区大小
+        register-health-indicator: true # 在/actuator/health端点显示熔断器健康状态
+
 management:
   # ==================== Prometheus 指标配置 ====================
   endpoints:
