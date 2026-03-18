@@ -22,7 +22,7 @@ services:
     volumes:
       - kafka-data:/tmp/kraft-combined-logs
     networks:
-      - kafka-network
+      - microservices-network
 
   kafdrop:
     image: obsidiandynamics/kafdrop:latest
@@ -36,7 +36,7 @@ services:
     depends_on:
       - kafka
     networks:
-      - kafka-network
+      - microservices-network
 
   zipkin:
     image: openzipkin/zipkin:latest
@@ -46,11 +46,43 @@ services:
     environment:
       STORAGE_TYPE: mem
     networks:
-      - kafka-network
+      - microservices-network
+
+  consul:
+    image: hashicorp/consul:latest
+    container_name: consul
+    hostname: consul
+    ports:
+      - "8500:8500"
+      - "8600:8600/tcp"
+      - "8600:8600/udp"
+    environment:
+      CONSUL_HTTP_TOKEN: 5c72f559-9ef9-48b4-99c7-23e9092f9a0f
+    command: >
+      consul agent -server -ui 
+      -bootstrap 
+      -client=0.0.0.0 
+      -bind='{{ GetInterfaceIP "eth0" }}' 
+      -data-dir=/consul/data
+      -enable-script-checks=false
+      -disable-host-node-id
+      -hcl='acl { enabled = true default_policy = "deny" enable_token_persistence = true tokens { master = "5c72f559-9ef9-48b4-99c7-23e9092f9a0f" default = "5c72f559-9ef9-48b4-99c7-23e9092f9a0f" } }'
+      -hcl='performance { raft_multiplier = 1 }'
+    volumes:
+      - consul-data:/consul/data
+    networks:
+      - microservices-network
+    healthcheck:
+      test: [ "CMD-SHELL", "consul info -token=5c72f559-9ef9-48b4-99c7-23e9092f9a0f &>/dev/null && echo 0 || echo 1" ]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
 networks:
-  kafka-network:
+  microservices-network:
     driver: bridge
 
 volumes:
+  consul-data:
   kafka-data:

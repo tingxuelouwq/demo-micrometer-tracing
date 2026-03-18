@@ -1,7 +1,18 @@
 spring:
   application:
     name: demo-micrometer-tracing
-
+  cloud:
+    # ==================== Consul 服务注册与发现 ====================
+    consul:
+      host: localhost
+      port: 8500
+      token: 5c72f559-9ef9-48b4-99c7-23e9092f9a0f
+      discovery:
+        service-name: ${spring.application.name}
+        instance-id: ${spring.application.name}_${spring.cloud.client.ip-address}_${server.port}
+        health-check-interval: 10s
+        prefer-ip-address: true
+        query-passing: true
 management:
   # ==================== Prometheus 指标配置 ====================
   endpoints:
@@ -23,8 +34,9 @@ management:
     export:
       zipkin:
         endpoint: http://localhost:9411/api/v2/spans
+
 # ==================== Kafka 日志配置 ====================
 logging:
   kafka:
     bootstrap-servers: localhost:9092
-    topic: app-logs-${spring.application.name}
+    topic: zipkin
