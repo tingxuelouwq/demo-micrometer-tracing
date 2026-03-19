@@ -19,14 +19,15 @@ spring:
   # ==================== 原生声明式 HTTP 客户端配置 ====================
   http:
     clients:
-      connect-timeout: 2s
-      read-timeout: 5s
+      # 全局：较宽松，给连接池留有余地
+      connect-timeout: 3s
+      read-timeout: 10s
     serviceclient:
       demo:
         base-url: "lb://demo-micrometer-tracing"
-        # 可覆盖全局超时
-        connect-timeout: 1s
-        read-timeout: 2s
+        # 服务级：可以比全局更严格
+        connect-timeout: 2s
+        read-timeout: 5s
 
 # ==================== Resilience4j 熔断限流配置 ====================
 resilience4j:
@@ -52,7 +53,7 @@ management:
     web:
       exposure:
         # 暴露 prometheus 端点，也可暴露所有端点: "*"
-        include: health,info,prometheus,metrics
+        include: health,info,prometheus,metrics,httpclient
       base-path: /actuator  # 端点基础路径
   metrics:
     tags:
@@ -73,3 +74,21 @@ logging:
   kafka:
     bootstrap-servers: localhost:9092
     topic: zipkin
+
+# ==================== WebClient 高并发配置 ====================
+webclient:
+  pool:
+    # 连接池配置（类似 feign.httpclient.max-connections-per-route）
+    max-connections: 200              # 单服务最大连接数（Feign 默认 200）
+    pending-acquire-max-count: 500    # 等待队列长度
+
+    # 超时配置（完全对应 Feign 的 timeouts）
+    connect-timeout: 2000               # 连接超时 2s（Feign 默认 10s）
+    read-timeout: 5000                  # 读取超时 5s（Feign 默认 60s）
+    write-timeout: 5000                 # 写入超时 5s（WebClient 特有）
+
+    # 连接池生命周期配置
+    max-idle-time-seconds: 30           # 连接最大空闲时间（秒），超过指定时间会被关闭回收，避免占用资源
+    max-life-time-minutes: 5            # 连接最大存活时间（分钟），无论是否使用，创建后超时指定时间就强制关闭，防止连接老化/泄漏
+    pending-acquire-timeout-seconds: 10 # 获取连接等待超时（秒）
+    evict-in-background-seconds: 30     # 后台清理间隔（秒），每隔指定时间后台线程扫描一次，清理过期/空闲连接
