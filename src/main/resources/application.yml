@@ -23,7 +23,7 @@ spring:
       read-timeout: 5s
     serviceclient:
       demo:
-        base-url: "http://localhost:8090"
+        base-url: "lb://demo-micrometer-tracing"
         # 可覆盖全局超时
         connect-timeout: 1s
         read-timeout: 2s

@@ -5,7 +5,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.service.annotation.GetExchange;
 import org.springframework.web.service.annotation.HttpExchange;
 import org.springframework.web.service.annotation.PostExchange;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -16,17 +15,11 @@ import java.util.List;
 public interface UserClient {
 
     @GetExchange("/{id}")
-    Mono<User> getUserById(@PathVariable Long id);
-
-    @GetExchange("/{id}")
     User getUserByIdSync(@PathVariable Long id);
-
-    @GetExchange
-    Mono<List<User>> getAllUsers();
 
     @GetExchange
     List<User> getAllUsersSync();
 
     @PostExchange
-    Mono<User> createUser(@RequestParam String name, @RequestParam String email);
+    User createUser(@RequestParam String name, @RequestParam String email);
 }

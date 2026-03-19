@@ -4,7 +4,6 @@ import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -43,36 +42,15 @@ public class DemoController {
             contextualName = "fetching-all-users-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public List<User> getAllUsers() {
-        log.info("[SYNC] Fetching all users");
+        log.info("[sync] Fetching all users");
         return userClient.getAllUsersSync();
     }
 
-    // ==================== 异步调用（高并发） ====================
-
-    @GetMapping("/users/async/{id}")
-    @Observed(name = "user.getById.async",
-            contextualName = "fetching-user-by-id-async",
-            lowCardinalityKeyValues = {"client", "http-exchange", "mode", "async"})
-    public Mono<User> getUserAsync(@PathVariable Long id) {
-        log.info("[ASYNC] Fetching user with id: {}", id);
-        return userClient.getUserById(id)
-                .doOnNext(user -> log.info("[ASYNC] Got user: {}", user));
-    }
-
-    @GetMapping("/users/async")
-    @Observed(name = "user.getAll.async",
-            contextualName = "fetching-all-users-async",
-            lowCardinalityKeyValues = {"client", "http-exchange", "mode", "async"})
-    public Mono<List<User>> getAllUsersAsync() {
-        log.info("[ASYNC] Fetching all users");
-        return userClient.getAllUsers();
-    }
-
-    @PostMapping("/users/async")
-    @Observed(name = "user.create.async",
-            contextualName = "creating-user-async",
-            lowCardinalityKeyValues = {"client", "http-exchange", "mode", "async"})
-    public Mono<User> createUserAsync(@RequestParam String name, @RequestParam String email) {
+    @PostMapping("/users")
+    @Observed(name = "user.create",
+            contextualName = "creating-user",
+            lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
+    public User createUserAsync(@RequestParam String name, @RequestParam String email) {
         log.info("[ASYNC] Creating user: name={}, email={}", name, email);
         return userClient.createUser(name, email);
     }
