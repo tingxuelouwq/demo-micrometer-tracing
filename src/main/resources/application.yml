@@ -32,20 +32,70 @@ spring:
 # ==================== Resilience4j 熔断限流配置 ====================
 resilience4j:
   circuitbreaker:
-    # 熔断降级全局默认配置
-    configs:
-      default:
-        # 熔断触发条件
-        sliding-window-size: 100  # 基于最近100次请求计算失败率
-        failure-rate-threshold: 50  # 失败率阈值：50%请求失败时熔断
-        slow-call-rate-threshold: 80  # 慢调用阈值：80%请求为慢调用时熔断
-        slow-call-duration-threshold: 2s  # 慢调用定义：超过2秒视为慢调用
-        # 熔断持续时间
-        wait-duration-in-open-state: 10s  # 熔断后等待10秒进入半开状态
-        automatic-transition-from-open-to-half-open-enabled: true # 熔断器打开后，等待时间一到自动切换到HALF_OPEN，无需等待请求触发
-        permitted-number-of-calls-in-half-open-state: 10  # 半开状态允许10个试探请求
-        event-consumer-buffer-size: 10  # 存储熔断器状态变更事件的环形缓冲区大小
-        register-health-indicator: true # 在/actuator/health端点显示熔断器健康状态
+    instances:
+      userService:
+        # 失败率阈值 50%，超过则熔断
+        failureRateThreshold: 50
+        # 慢调用比例阈值
+        slowCallRateThreshold: 80
+        # 慢调用时间阈值 1秒
+        slowCallDurationThreshold: 1000
+        # 熔断后等待 10秒 进入半开状态
+        waitDurationInOpenState: 10000
+        # 允许半开状态自动转换，即熔断器打开后，等待时间一到自动切换到HALF_OPEN，无需等待请求触发
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        # 半开状态允许 3 个测试请求
+        permittedNumberOfCallsInHalfOpenState: 3
+        # 最小调用次数（达到此值才开始计算失败率）
+        minimumNumberOfCalls: 5
+        # 滑动窗口大小
+        slidingWindowSize: 10
+        slidingWindowType: COUNT_BASED
+        # 忽略的异常（不计入失败）
+        ignoreExceptions:
+          - java.lang.IllegalArgumentException
+  retry:
+    instances:
+      userService:
+        # 最大重试次数
+        maxAttempts: 3
+        # 重试间隔 1秒
+        waitDuration: 1000
+        # 指数退避乘数，表示每次重试间隔的等待时间以何种倍数增长
+        exponentialBackoffMultiplier: 2
+        # 触发重试的异常
+        retryExceptions:
+          - java.net.ConnectException
+          - java.net.SocketTimeoutException
+          - java.io.IOException
+          - org.springframework.web.client.ResourceAccessException
+        # 忽略的异常（不重试）
+        ignoreExceptions:
+          - org.springframework.web.client.HttpClientErrorException
+  ratelimiter:
+    instances:
+      userService:
+        # 周期内允许的请求数
+        limitForPeriod: 100
+        # 令牌刷新周期
+        limitRefreshPeriod: 1s
+        # 当令牌桶耗尽时，请求等待获取令牌的最大时间（0表示不等待），超时未获取到抛出RequestNotPermitted
+        timeoutDuration: 500
+  timelimiter:
+    instances:
+      userService:
+        # 方法执行超时时间
+        timeout-duration: 10s
+        # 超时后是否取消正在执行的任务
+        cancel-running-future: true
+  # 舱壁配置（可选）
+  bulkhead:
+    instances:
+      userService:
+        # 最大并发调用数
+        maxConcurrentCalls: 10
+        # 当并发数达到上限时，新请求等待获取许可的最大时间（0表示不等待直接拒绝），超时未获取到抛出BulkheadFullException
+        maxWaitDuration: 0
 
 management:
   # ==================== Prometheus 指标配置 ====================
@@ -53,7 +103,7 @@ management:
     web:
       exposure:
         # 暴露 prometheus 端点，也可暴露所有端点: "*"
-        include: health,info,prometheus,metrics,httpclient
+        include: health,info,prometheus,metrics,circuitbreakers,ratelimiters,retries,bulkheads
       base-path: /actuator  # 端点基础路径
   metrics:
     tags:
@@ -74,21 +124,3 @@ logging:
   kafka:
     bootstrap-servers: localhost:9092
     topic: zipkin
-
-# ==================== WebClient 高并发配置 ====================
-webclient:
-  pool:
-    # 连接池配置（类似 feign.httpclient.max-connections-per-route）
-    max-connections: 200              # 单服务最大连接数（Feign 默认 200）
-    pending-acquire-max-count: 500    # 等待队列长度
-
-    # 超时配置（完全对应 Feign 的 timeouts）
-    connect-timeout: 2000               # 连接超时 2s（Feign 默认 10s）
-    read-timeout: 5000                  # 读取超时 5s（Feign 默认 60s）
-    write-timeout: 5000                 # 写入超时 5s（WebClient 特有）
-
-    # 连接池生命周期配置
-    max-idle-time-seconds: 30           # 连接最大空闲时间（秒），超过指定时间会被关闭回收，避免占用资源
-    max-life-time-minutes: 5            # 连接最大存活时间（分钟），无论是否使用，创建后超时指定时间就强制关闭，防止连接老化/泄漏
-    pending-acquire-timeout-seconds: 10 # 获取连接等待超时（秒）
-    evict-in-background-seconds: 30     # 后台清理间隔（秒），每隔指定时间后台线程扫描一次，清理过期/空闲连接
