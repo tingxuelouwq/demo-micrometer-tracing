@@ -96,12 +96,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webflux</artifactId>
         </dependency>
-
-        <!-- Reactor Netty（高性能 HTTP 客户端），无论 MVC 还是 WebFlux 都可用） -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-reactor-netty</artifactId>
-        </dependency>
     </dependencies>
 
     <dependencyManagement>
