@@ -31,7 +31,6 @@ public class UserClientService {
      * 获取用户 - 带熔断保护
      */
     public User getUserByIdSync(Long id) {
-        // 创建熔断器实例（name 对应 application.yml 配置）
         CircuitBreaker circuitBreaker = circuitBreakerFactory.create("userService");
 
         // 执行调用，提供降级函数
@@ -79,8 +78,8 @@ public class UserClientService {
                 .run(
                         () -> userClient.triggerError(),  // 这个调用会失败
                         throwable -> {
-                            logger.error("【熔断降级】调用错误端点失败: {}", throwable.getMessage());
-                            return "降级响应";
+                            logger.error("【user熔断降级】调用错误端点失败: {}", throwable.getMessage());
+                            return "user降级响应";
                         }
                 );
     }

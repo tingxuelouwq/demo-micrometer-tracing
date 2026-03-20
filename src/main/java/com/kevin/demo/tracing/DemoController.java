@@ -12,9 +12,11 @@ public class DemoController {
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 
     private final UserClientService userClientService;
+    private final EchoClientService echoClientService;
 
-    public DemoController(UserClientService userClientService) {
+    public DemoController(UserClientService userClientService, EchoClientService echoClientService) {
         this.userClientService = userClientService;
+        this.echoClientService = echoClientService;
     }
 
     @GetMapping("/hello")
@@ -22,7 +24,6 @@ public class DemoController {
             contextualName = "getting-hello",
             lowCardinalityKeyValues = {"method", "get"})
     public String hello() {
-        log.info("hello");
         return "hello!";
     }
 
@@ -33,7 +34,6 @@ public class DemoController {
             contextualName = "fetching-user-by-id-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public User getUser(@PathVariable Long id) {
-        log.info("[SYNC] Fetching user with id: {}", id);
         return userClientService.getUserByIdSync(id);
     }
 
@@ -42,7 +42,6 @@ public class DemoController {
             contextualName = "fetching-all-users-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public List<User> getAllUsers() {
-        log.info("[sync] Fetching all users");
         return userClientService.getAllUsersSync();
     }
 
@@ -51,16 +50,30 @@ public class DemoController {
             contextualName = "creating-user",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public User createUserAsync(@RequestParam String name, @RequestParam String email) {
-        log.info("[ASYNC] Creating user: name={}, email={}", name, email);
         return userClientService.createUser(name, email);
+    }
+
+    @GetMapping("/echo/{name}")
+    @Observed(name = "echo.name",
+            contextualName = "echo-name-sync",
+            lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
+    public String echo(@PathVariable String name) {
+        return echoClientService.echo(name);
     }
 
     /**
      * 强制触发异常（用于测试熔断）
-     * 连续调用2次此端点，第3次应该触发熔断
      */
-    @GetMapping("/trigger-error")
-    public String triggerError() {
+    @GetMapping("/trigger-error-user")
+    public String triggerErrorUser() {
         return userClientService.testError();
+    }
+
+    /**
+     * 强制触发异常（用于测试熔断）
+     */
+    @GetMapping("/trigger-error-echo")
+    public String triggerErrorEcho() {
+        return echoClientService.testError();
     }
 }

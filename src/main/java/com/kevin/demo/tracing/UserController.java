@@ -28,4 +28,9 @@ public class UserController {
     public User createUser(@RequestParam String name, @RequestParam String email) {
         return userService.createUser(name, email);
     }
+
+    @GetMapping("/error")
+    public String error() {
+        throw new RuntimeException("user模拟服务异常");
+    }
 }

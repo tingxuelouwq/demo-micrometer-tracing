@@ -23,7 +23,12 @@ spring:
       connect-timeout: 3s
       read-timeout: 10s
     serviceclient:
-      demo:
+      user-client:
+        base-url: "lb://demo-micrometer-tracing"
+        # 服务级：可以比全局更严格
+        connect-timeout: 2s
+        read-timeout: 5s
+      echo-client:
         base-url: "lb://demo-micrometer-tracing"
         # 服务级：可以比全局更严格
         connect-timeout: 2s
@@ -32,12 +37,23 @@ spring:
 # ==================== Resilience4j 熔断限流配置 ====================
 resilience4j:
   circuitbreaker:
-    instances:
-      userService:
+    configs:
+      default:
         slidingWindowSize: 1
         minimumNumberOfCalls: 1
         failureRateThreshold: 1  # 1% 即触发，相当于1次失败就熔断
         waitDurationInOpenState: 3000  # 3秒后尝试恢复
+#    instances:
+#      userService:
+#        slidingWindowSize: 1
+#        minimumNumberOfCalls: 1
+#        failureRateThreshold: 1  # 1% 即触发，相当于1次失败就熔断
+#        waitDurationInOpenState: 3000  # 3秒后尝试恢复
+#      echoService:
+#        slidingWindowSize: 1
+#        minimumNumberOfCalls: 1
+#        failureRateThreshold: 1  # 1% 即触发，相当于1次失败就熔断
+#        waitDurationInOpenState: 3000  # 3秒后尝试恢复
 #  retry:
 #    instances:
 #      userService:
