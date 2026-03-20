@@ -34,68 +34,52 @@ resilience4j:
   circuitbreaker:
     instances:
       userService:
-        # 失败率阈值 50%，超过则熔断
-        failureRateThreshold: 50
-        # 慢调用比例阈值
-        slowCallRateThreshold: 80
-        # 慢调用时间阈值 1秒
-        slowCallDurationThreshold: 1000
-        # 熔断后等待 10秒 进入半开状态
-        waitDurationInOpenState: 10000
-        # 允许半开状态自动转换，即熔断器打开后，等待时间一到自动切换到HALF_OPEN，无需等待请求触发
-        automaticTransitionFromOpenToHalfOpenEnabled: true
-        # 半开状态允许 3 个测试请求
-        permittedNumberOfCallsInHalfOpenState: 3
-        # 最小调用次数（达到此值才开始计算失败率）
-        minimumNumberOfCalls: 5
-        # 滑动窗口大小
-        slidingWindowSize: 10
-        slidingWindowType: COUNT_BASED
-        # 忽略的异常（不计入失败）
-        ignoreExceptions:
-          - java.lang.IllegalArgumentException
-  retry:
-    instances:
-      userService:
-        # 最大重试次数
-        maxAttempts: 3
-        # 重试间隔 1秒
-        waitDuration: 1000
-        # 指数退避乘数，表示每次重试间隔的等待时间以何种倍数增长
-        exponentialBackoffMultiplier: 2
-        # 触发重试的异常
-        retryExceptions:
-          - java.net.ConnectException
-          - java.net.SocketTimeoutException
-          - java.io.IOException
-          - org.springframework.web.client.ResourceAccessException
-        # 忽略的异常（不重试）
-        ignoreExceptions:
-          - org.springframework.web.client.HttpClientErrorException
-  ratelimiter:
-    instances:
-      userService:
-        # 周期内允许的请求数
-        limitForPeriod: 100
-        # 令牌刷新周期
-        limitRefreshPeriod: 1s
-        # 当令牌桶耗尽时，请求等待获取令牌的最大时间（0表示不等待），超时未获取到抛出RequestNotPermitted
-        timeoutDuration: 500
-  timelimiter:
-    instances:
-      userService:
-        # 方法执行超时时间
-        timeout-duration: 10s
-        # 超时后是否取消正在执行的任务
-        cancel-running-future: true
-  # 舱壁配置（可选）
-  bulkhead:
-    instances:
-      userService:
-        # 最大并发调用数
-        maxConcurrentCalls: 10
-        # 当并发数达到上限时，新请求等待获取许可的最大时间（0表示不等待直接拒绝），超时未获取到抛出BulkheadFullException
-        maxWaitDuration: 0
+        slidingWindowSize: 1
+        minimumNumberOfCalls: 1
+        failureRateThreshold: 1  # 1% 即触发，相当于1次失败就熔断
+        waitDurationInOpenState: 3000  # 3秒后尝试恢复
+#  retry:
+#    instances:
+#      userService:
+#        # 最大重试次数
+#        maxAttempts: 3
+#        # 重试间隔 1秒
+#        waitDuration: 1000
+#        # 指数退避乘数，表示每次重试间隔的等待时间以何种倍数增长
+#        exponentialBackoffMultiplier: 2
+#        # 触发重试的异常
+#        retryExceptions:
+#          - java.net.ConnectException
+#          - java.net.SocketTimeoutException
+#          - java.io.IOException
+#          - org.springframework.web.client.ResourceAccessException
+#        # 忽略的异常（不重试）
+#        ignoreExceptions:
+#          - org.springframework.web.client.HttpClientErrorException
+#  ratelimiter:
+#    instances:
+#      userService:
+#        # 周期内允许的请求数
+#        limitForPeriod: 100
+#        # 令牌刷新周期
+#        limitRefreshPeriod: 1s
+#        # 当令牌桶耗尽时，请求等待获取令牌的最大时间（0表示不等待），超时未获取到抛出RequestNotPermitted
+#        timeoutDuration: 500
+#  timelimiter:
+#    instances:
+#      userService:
+#        # 方法执行超时时间
+#        timeout-duration: 10s
+#        # 超时后是否取消正在执行的任务
+#        cancel-running-future: true
+#  # 舱壁配置（可选）
+#  bulkhead:
+#    instances:
+#      userService:
+#        # 最大并发调用数
+#        maxConcurrentCalls: 10
+#        # 当并发数达到上限时，新请求等待获取许可的最大时间（0表示不等待直接拒绝），超时未获取到抛出BulkheadFullException
+#        maxWaitDuration: 0
 
 management:
   # ==================== Prometheus 指标配置 ====================

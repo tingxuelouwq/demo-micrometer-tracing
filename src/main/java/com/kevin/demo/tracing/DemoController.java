@@ -11,10 +11,10 @@ import java.util.List;
 public class DemoController {
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 
-    private final UserClient userClient;
+    private final UserClientService userClientService;
 
-    public DemoController(UserClient userClient) {
-        this.userClient = userClient;
+    public DemoController(UserClientService userClientService) {
+        this.userClientService = userClientService;
     }
 
     @GetMapping("/hello")
@@ -34,7 +34,7 @@ public class DemoController {
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public User getUser(@PathVariable Long id) {
         log.info("[SYNC] Fetching user with id: {}", id);
-        return userClient.getUserByIdSync(id);
+        return userClientService.getUserByIdSync(id);
     }
 
     @GetMapping("/users")
@@ -43,7 +43,7 @@ public class DemoController {
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public List<User> getAllUsers() {
         log.info("[sync] Fetching all users");
-        return userClient.getAllUsersSync();
+        return userClientService.getAllUsersSync();
     }
 
     @PostMapping("/users")
@@ -52,6 +52,15 @@ public class DemoController {
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public User createUserAsync(@RequestParam String name, @RequestParam String email) {
         log.info("[ASYNC] Creating user: name={}, email={}", name, email);
-        return userClient.createUser(name, email);
+        return userClientService.createUser(name, email);
+    }
+
+    /**
+     * 强制触发异常（用于测试熔断）
+     * 连续调用2次此端点，第3次应该触发熔断
+     */
+    @GetMapping("/trigger-error")
+    public String triggerError() {
+        return userClientService.testError();
     }
 }
