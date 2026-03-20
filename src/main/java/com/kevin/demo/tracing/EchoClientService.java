@@ -16,10 +16,10 @@ public class EchoClientService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final CircuitBreakerFactory circuitBreakerFactory;
+    private final CircuitBreakerFactory<?,?> circuitBreakerFactory;
     private final EchoClient echoClient;
 
-    public EchoClientService(CircuitBreakerFactory circuitBreakerFactory, EchoClient echoClient) {
+    public EchoClientService(CircuitBreakerFactory<?,?> circuitBreakerFactory, EchoClient echoClient) {
         this.circuitBreakerFactory = circuitBreakerFactory;
         this.echoClient = echoClient;
     }

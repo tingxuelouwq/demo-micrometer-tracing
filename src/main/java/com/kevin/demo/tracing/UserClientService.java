@@ -19,10 +19,10 @@ public class UserClientService {
 
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
-    private final CircuitBreakerFactory circuitBreakerFactory;
+    private final CircuitBreakerFactory<?,?> circuitBreakerFactory;
     private final UserClient userClient;
 
-    public UserClientService(CircuitBreakerFactory circuitBreakerFactory, UserClient userClient) {
+    public UserClientService(CircuitBreakerFactory<?,?> circuitBreakerFactory, UserClient userClient) {
         this.circuitBreakerFactory = circuitBreakerFactory;
         this.userClient = userClient;
     }
