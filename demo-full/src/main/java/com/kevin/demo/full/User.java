@@ -1,4 +1,4 @@
-package com.kevin.demo.tracing;
+package com.kevin.demo.full;
 
 public class User {
     private Long id;

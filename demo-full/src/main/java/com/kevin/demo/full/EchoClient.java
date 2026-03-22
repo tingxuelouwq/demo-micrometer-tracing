@@ -1,4 +1,4 @@
-package com.kevin.demo.tracing;
+package com.kevin.demo.full;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;
