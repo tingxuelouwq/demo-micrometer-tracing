@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class DemoController {
-    private static final Logger log = LoggerFactory.getLogger(DemoController.class);
+    private static final Logger logger = LoggerFactory.getLogger(DemoController.class);
 
     private final EchoClientService echoClientService;
 
@@ -18,27 +18,21 @@ public class DemoController {
         this.echoClientService = echoClientService;
     }
 
-    @GetMapping("/hello")
-    @Observed(name = "hello.operation",
-            contextualName = "getting-hello",
-            lowCardinalityKeyValues = {"method", "get"})
-    public String hello() {
-        return "hello!";
-    }
-
     @GetMapping("/echo/{name}")
     @Observed(name = "echo.name",
             contextualName = "echo-name-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public String echo(@PathVariable String name) {
+        logger.info("start echo in demo controller");
         return echoClientService.echo(name);
     }
 
     /**
      * 强制触发异常（用于测试熔断）
      */
-    @GetMapping("/trigger-error-echo")
-    public String triggerErrorEcho() {
-        return echoClientService.testError();
+    @GetMapping("/trigger-error-echo/{msg}")
+    public String triggerErrorEcho(@PathVariable String msg) {
+        logger.info("start trigger echo error in demo controller");
+        return echoClientService.testError(msg);
     }
 }
