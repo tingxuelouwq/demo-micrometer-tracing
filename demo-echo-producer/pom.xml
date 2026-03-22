@@ -4,9 +4,9 @@
 
     <parent>
         <groupId>com.kevin</groupId>
-        <artifactId>demo-micrometer-tracing</artifactId>
+        <artifactId>demo-microservice-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath/>
     </parent>
 
     <artifactId>demo-echo-producer</artifactId>

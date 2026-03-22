@@ -1,4 +1,4 @@
-package com.kevin.demo.echo.client;
+package com.kevin.demo.client.echo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

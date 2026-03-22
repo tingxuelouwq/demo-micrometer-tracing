@@ -1,4 +1,4 @@
-package com.kevin.demo.echo.client;
+package com.kevin.demo.client.echo;
 
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.service.annotation.GetExchange;

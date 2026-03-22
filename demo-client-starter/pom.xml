@@ -6,12 +6,14 @@
 
     <parent>
         <groupId>com.kevin</groupId>
-        <artifactId>demo-micrometer-tracing</artifactId>
+        <artifactId>demo-client-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../pom.xml</relativePath>
+        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
-    <artifactId>demo-echo-client-starter</artifactId>
-    <name>demo-echo-client-starter</name>
+    <groupId>com.kevin</groupId>
+    <artifactId>demo-client-starter</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>demo-client-starter</name>
     <packaging>jar</packaging>
 </project>

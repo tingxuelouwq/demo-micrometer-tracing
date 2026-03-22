@@ -4,23 +4,31 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.2</version>
+        <groupId>com.kevin</groupId>
+        <artifactId>demo-pom-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.kevin</groupId>
-    <artifactId>demo-full</artifactId>
+    <artifactId>demo-microservice-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo-full</name>
-    <description>demo-full</description>
-    <packaging>war</packaging>
+    <name>demo-microservice-parent</name>
+    <description>demo-microservice-parent</description>
+    <packaging>pom</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- WebFlux - 用于 WebClient 响应式 HTTP 客户端 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Spring Boot’s support for Micrometer Tracing over OpenTelemetry-->
@@ -92,23 +100,5 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
         </dependency>
-
-        <!-- WebFlux - 用于 WebClient 响应式 HTTP 客户端 -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-webflux</artifactId>
-        </dependency>
     </dependencies>
-
-    <dependencyManagement>
-        <dependencies>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-dependencies</artifactId>
-                <version>2025.1.1</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
-        </dependencies>
-    </dependencyManagement>
 </project>

@@ -1,9 +1,9 @@
 server:
-  port: 9051
+  port: 9061
 
 spring:
   application:
-    name: demo-echo-service
+    name: demo-user-service
   cloud:
     # ==================== Consul 服务注册与发现 ====================
     consul:
