@@ -4,83 +4,84 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
 
-/**
- *
- * @author 王琪
- * @date 2026/3/20 09:13
- */
 @Service
 public class UserClientService {
 
-    private final Logger logger = LoggerFactory.getLogger(this.getClass());
+    private static final Logger log = LoggerFactory.getLogger(UserClientService.class);
 
-    private final CircuitBreakerFactory circuitBreakerFactory;
     private final UserClient userClient;
+    private final CircuitBreaker circuitBreaker;
 
-    public UserClientService(CircuitBreakerFactory circuitBreakerFactory, UserClient userClient) {
-        this.circuitBreakerFactory = circuitBreakerFactory;
+    public UserClientService(UserClient userClient,
+                             CircuitBreakerFactory<?,?> circuitBreakerFactory) {
         this.userClient = userClient;
+        this.circuitBreaker = circuitBreakerFactory.create("userClient");
     }
 
-    /**
-     * 获取用户 - 带熔断保护
-     */
-    public User getUserByIdSync(Long id) {
-        CircuitBreaker circuitBreaker = circuitBreakerFactory.create("userService");
+    // -------------------- Public API --------------------
 
-        // 执行调用，提供降级函数
+    public User getUserByIdSync(Long id) {
         return circuitBreaker.run(
                 () -> userClient.getUserByIdSync(id),
-                throwable -> {
-                    logger.error("【熔断降级】获取用户失败，ID: {}, 异常: {}",
-                            id, throwable.getMessage());
-                    return new User(id, "未知用户", "fallback@example.com");
-                }
+                throwable -> getUserByIdFallback(id, throwable)
         );
     }
 
-    /**
-     * 获取所有用户 - 带熔断保护
-     */
     public List<User> getAllUsersSync() {
-        return circuitBreakerFactory.create("userService")
-                .run(
-                        userClient::getAllUsersSync,
-                        throwable -> {
-                            logger.error("【熔断降级】获取用户列表失败: {}", throwable.getMessage());
-                            return Collections.emptyList();
-                        }
-                );
+        return circuitBreaker.run(
+                () -> userClient.getAllUsersSync(),
+                this::getAllUsersFallback
+        );
     }
 
-    /**
-     * 创建用户 - 带熔断保护
-     */
     public User createUser(String name, String email) {
-        return circuitBreakerFactory.create("userService")
-                .run(
-                        () -> userClient.createUser(name, email),
-                        throwable -> {
-                            logger.error("【熔断降级】创建用户失败，name: {}, 异常: {}",
-                                    name, throwable.getMessage());
-                            return new User(-1L, name + "【创建失败】", email);
-                        }
-                );
+        return circuitBreaker.run(
+                () -> userClient.createUser(name, email),
+                throwable -> createUserFallback(name, email, throwable)
+        );
     }
 
     public String testError() {
-        return circuitBreakerFactory.create("userService")
-                .run(
-                        () -> userClient.triggerError(),  // 这个调用会失败
-                        throwable -> {
-                            logger.error("【user熔断降级】调用错误端点失败: {}", throwable.getMessage());
-                            return "user降级响应";
-                        }
-                );
+        return circuitBreaker.run(
+                () -> userClient.triggerError(),
+                this::userErrorFallback
+        );
+    }
+
+    // -------------------- Fallbacks --------------------
+
+    private User getUserByIdFallback(Long id, Throwable t) {
+        log.error("【熔断降级】获取用户失败，ID={}", id, unwrap(t));
+        return new User(id, "未知用户", "fallback@example.com");
+    }
+
+    private List<User> getAllUsersFallback(Throwable t) {
+        log.error("【熔断降级】获取用户列表失败", unwrap(t));
+        return Collections.emptyList();
+    }
+
+    private User createUserFallback(String name, String email, Throwable t) {
+        log.error("【熔断降级】创建用户失败，name={}", name, unwrap(t));
+        return new User(-1L, name + "【创建失败】", email);
+    }
+
+    private String userErrorFallback(Throwable t) {
+        log.error("【user熔断降级】调用错误端点失败", unwrap(t));
+        return "user降级响应";
+    }
+
+    private Throwable unwrap(Throwable t) {
+        Throwable result = t;
+        while (result instanceof NoFallbackAvailableException
+                && result.getCause() != null) {
+            result = result.getCause();
+        }
+        return result;
     }
 }

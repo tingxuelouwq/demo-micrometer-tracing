@@ -1,4 +1,4 @@
-package com.kevin.demo.full;
+package com.kevin.demo.echo;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,7 +20,7 @@ public class EchoController {
     }
 
     @GetMapping("/error")
-    public String error(String msg) {
-        throw new RuntimeException("echo模拟服务异常," + msg);
+    public String error() {
+        throw new RuntimeException("echo模拟服务异常");
     }
 }
