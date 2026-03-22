@@ -1,4 +1,4 @@
-package com.kevin.demouserproducer;
+package com.kevin.user;
 
 public class User {
     private Long id;

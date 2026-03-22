@@ -7,15 +7,26 @@
         <groupId>com.kevin</groupId>
         <artifactId>demo-pom-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
     <groupId>com.kevin</groupId>
     <artifactId>demo-microservice-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>demo-microservice-parent</name>
-    <description>demo-microservice-parent</description>
     <packaging>pom</packaging>
+
+    <!-- IMPORTANT: import your BOM -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>com.kevin</groupId>
+                <artifactId>demo-pom-parent</artifactId>
+                <version>0.0.1-SNAPSHOT</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <!-- Spring Boot’s support for Micrometer Tracing over OpenTelemetry-->
@@ -60,7 +71,6 @@
             <groupId>com.github.danielwegener</groupId>
             <artifactId>logback-kafka-appender</artifactId>
             <version>0.2.0-RC2</version>
-            <scope>compile</scope>
         </dependency>
 
         <!-- logstash-logback-encoder: 提供 JSON 格式编码，方便 Logstash 解析 -->

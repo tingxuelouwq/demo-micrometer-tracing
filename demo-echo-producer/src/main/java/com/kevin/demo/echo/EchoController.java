@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/echo")
+@RequestMapping("/echo")
 public class EchoController {
 
     private final Logger logger = LoggerFactory.getLogger(EchoController.class);

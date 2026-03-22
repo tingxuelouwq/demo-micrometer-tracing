@@ -17,24 +17,24 @@ public interface UserClient {
     /**
      * 根据ID获取用户
      */
-    @GetExchange("/api/users/{id}")
+    @GetExchange("/users/{id}")
     User getUserByIdSync(@PathVariable Long id);
 
     /**
      * 获取所有用户
      */
-    @GetExchange("/api/users")
+    @GetExchange("/users")
     List<User> getAllUsersSync();
 
     /**
      * 创建用户
      */
-    @PostExchange("/api/users")
+    @PostExchange("/users")
     User createUser(@RequestParam String name, @RequestParam String email);
 
     /**
      * 专门用于测试熔断的错误端点 - 调用一个不存在的地址触发 404/500 错误
      */
-    @GetExchange("/api/users/error")  // 这个端点不存在，会返回 404
+    @GetExchange("/users/error")  // 这个端点不存在，会返回 404
     String triggerError();
 }
