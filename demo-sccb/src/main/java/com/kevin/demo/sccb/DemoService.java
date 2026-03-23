@@ -69,6 +69,7 @@ public class DemoService {
      * 但是，cancel-running-future: true 只是调用 CompletableFuture.cancel(true)，这只会发送中断信号
      * 关键 bug：你的 supplyAsync 使用了 默认的 ForkJoinPool，其中的线程是 守护线程，而且 Thread.sleep() 对中断的反应是抛出 InterruptedException，你捕获后又抛出了 RuntimeException，但这个异常被 CompletableFuture 内部捕获并转换为异常完成。
      * 然而，由于 TimeLimiter 的超时机制可能没有正确处理这种异常情况，导致最终返回了原始结果。
+     * 另外，注解方式确实不工作，建议使用编程式 API，它更可控且易于调试。
      */
     public CompletableFuture<String> callWithRateAndTimeLimit() {
         RateLimiter rateLimiter = rateLimiterRegistry.rateLimiter("rlService");
