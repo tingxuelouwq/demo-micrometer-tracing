@@ -1,0 +1,23 @@
+resilience4j:
+  circuitbreaker:
+    instances:
+      cbService:
+        sliding-window-size: 10
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 10s
+  ratelimiter:
+    instances:
+      rlService:
+        limit-for-period: 5
+        limit-refresh-period: 1s
+        timeout-duration: 0
+  timelimiter:
+    instances:
+      tlService:
+        timeout-duration: 2s
+        cancel-running-future: true
+  bulkhead:
+    instances:
+      bhService:
+        max-concurrent-calls: 10
+        max-wait-duration: 0

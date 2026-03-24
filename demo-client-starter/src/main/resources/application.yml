@@ -1,0 +1,7 @@
+spring:
+  http:
+    serviceclient:
+      demo-echo-service:
+        base-url: "lb://demo-echo-service"
+      demo-user-service:
+        base-url: "lb://demo-user-service"
