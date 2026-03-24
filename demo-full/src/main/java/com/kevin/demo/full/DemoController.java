@@ -61,6 +61,11 @@ public class DemoController {
         return echoClientService.echo(name);
     }
 
+    @GetMapping("/echo/time/{name}")
+    public String echoTime(@PathVariable String name) {
+        return echoClientService.echoTime(name);
+    }
+
     /**
      * 强制触发异常（用于测试熔断）
      */

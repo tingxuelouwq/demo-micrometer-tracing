@@ -10,6 +10,9 @@ import org.springframework.web.service.annotation.HttpExchange;
 @HttpExchange
 public interface EchoClient {
 
-    @GetExchange("/echo/{name}")
+    @GetExchange("/api/echo/{name}")
     String echo(@PathVariable String name);
+
+    @GetExchange("/api/echo/time/{name}")
+    String echoTime(@PathVariable String name);
 }

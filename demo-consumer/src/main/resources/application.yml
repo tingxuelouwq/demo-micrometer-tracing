@@ -16,13 +16,6 @@ spring:
         health-check-interval: 10s
         prefer-ip-address: true
         query-passing: true
-  # ==================== 原生声明式 HTTP 客户端配置 ====================
-  http:
-    clients:
-      # 全局：较宽松，给连接池留有余地
-      connect-timeout: 3s
-      read-timeout: 10s
-
 management:
   # ==================== Prometheus 指标配置 ====================
   endpoints:

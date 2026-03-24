@@ -20,4 +20,14 @@ public class EchoController {
         }
         return "CircuitBreaker success, name=[" + name + "]";
     }
+
+    @GetMapping("/time/{name}")
+    String echoTime(@PathVariable String name) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return "Time success, name=[" + name + "]";
+    }
 }

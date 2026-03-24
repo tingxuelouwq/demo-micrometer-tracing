@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/echo")
+@RequestMapping("/api/echo")
 public class EchoController {
 
     private final Logger logger = LoggerFactory.getLogger(EchoController.class);
@@ -19,5 +19,15 @@ public class EchoController {
             throw new RuntimeException("Simulated failure");
         }
         return "CircuitBreaker success, name=[" + name + "]";
+    }
+
+    @GetMapping("/time/{name}")
+    String echoTime(@PathVariable String name) {
+        try {
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        return "Time success, name=[" + name + "]";
     }
 }

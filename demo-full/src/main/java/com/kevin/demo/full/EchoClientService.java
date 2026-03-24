@@ -29,6 +29,13 @@ public class EchoClientService {
                 .get();
     }
 
+    public String echoTime(String name) {
+        return Decorators.ofSupplier(() -> echoClient.echoTime(name)).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> echoFallback(name, throwable))
+                .decorate()
+                .get();
+    }
+
     // -------------------- Fallbacks --------------------
     private String echoFallback(String name, Throwable t) {
         return "【熔断降级】echo失败, name=" + name + ", errMsg={}" + unwrap(t).getMessage();

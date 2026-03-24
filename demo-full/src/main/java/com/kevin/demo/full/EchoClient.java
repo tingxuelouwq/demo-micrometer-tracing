@@ -12,4 +12,7 @@ public interface EchoClient {
 
     @GetExchange("/api/echo/{name}")
     String echo(@PathVariable String name);
+
+    @GetExchange("/api/echo/time/{name}")
+    String echoTime(@PathVariable String name);
 }

@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: demo-micrometer-tracing
+    name: demo-full
   cloud:
     # ==================== Consul 服务注册与发现 ====================
     consul:
@@ -20,19 +20,13 @@ spring:
   http:
     clients:
       # 全局：较宽松，给连接池留有余地
-      connect-timeout: 3s
-      read-timeout: 10s
+      connect-timeout: 1s
+      read-timeout: 2s
     serviceclient:
       user-client:
-        base-url: "lb://demo-micrometer-tracing"
-        # 服务级：可以比全局更严格
-        connect-timeout: 2s
-        read-timeout: 5s
+        base-url: "lb://demo-full"
       echo-client:
-        base-url: "lb://demo-micrometer-tracing"
-        # 服务级：可以比全局更严格
-        connect-timeout: 2s
-        read-timeout: 5s
+        base-url: "lb://demo-full"
 
 management:
   # ==================== Prometheus 指标配置 ====================
@@ -65,8 +59,8 @@ logging:
 # ==================== Resilience4j熔断限流配置 ====================
 resilience4j:
   circuitbreaker:
-    instances:
-      echoClient:
+    configs:
+      default:
         register-health-indicator: true
         sliding-window-size: 3
         minimum-number-of-calls: 1
@@ -74,3 +68,8 @@ resilience4j:
         wait-duration-in-open-state: 5s
         permitted-number-of-calls-in-half-open-state: 1
         automatic-transition-from-open-to-half-open-enabled: true
+  timelimiter:
+    configs:
+      default:
+        timeout-duration: 10s
+        cancel-running-future: true

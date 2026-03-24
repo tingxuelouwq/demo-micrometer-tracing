@@ -30,6 +30,11 @@ public class DemoController {
         return echoClientService.echo(name);
     }
 
+    @GetMapping("/echo/time/{name}")
+    public String echoTime(@PathVariable String name) {
+        return echoClientService.echoTime(name);
+    }
+
     @GetMapping("/users/{id}")
     @Observed(name = "user.getById",
             contextualName = "fetching-user-by-id-sync",
