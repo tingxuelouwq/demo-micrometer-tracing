@@ -12,10 +12,4 @@ public interface EchoClient {
 
     @GetExchange("/echo/{name}")
     String echo(@PathVariable String name);
-
-    /**
-     * 专门用于测试熔断的错误端点 - 调用一个不存在的地址触发 404/500 错误
-     */
-    @GetExchange("/echo/error")  // 这个端点不存在，会返回 404
-    String triggerError(@PathVariable String msg);
 }

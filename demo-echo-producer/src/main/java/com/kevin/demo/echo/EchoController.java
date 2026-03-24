@@ -15,12 +15,9 @@ public class EchoController {
 
     @GetMapping("/{name}")
     String echo(@PathVariable String name) {
-        logger.info("hello " + name);
-        return "hello " + name;
-    }
-
-    @GetMapping("/error")
-    public String error() {
-        throw new RuntimeException("echo模拟服务异常");
+        if (Math.random() > 0.5) {
+            throw new RuntimeException("Simulated failure");
+        }
+        return "CircuitBreaker success, name=[" + name + "]";
     }
 }

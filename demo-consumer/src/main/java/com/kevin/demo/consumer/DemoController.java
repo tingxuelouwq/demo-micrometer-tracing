@@ -27,17 +27,7 @@ public class DemoController {
             contextualName = "echo-name-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public String echo(@PathVariable String name) {
-        logger.info("start echo in demo controller");
         return echoClientService.echo(name);
-    }
-
-    /**
-     * 强制触发异常（用于测试熔断）
-     */
-    @GetMapping("/trigger-error-echo/{msg}")
-    public String triggerErrorEcho(@PathVariable String msg) {
-        logger.info("start trigger echo error in demo controller");
-        return echoClientService.testError(msg);
     }
 
     @GetMapping("/users/{id}")

@@ -1,9 +1,11 @@
 package com.kevin.demo.client.echo;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.decorators.Decorators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,52 +17,29 @@ public class EchoClientService {
     private final CircuitBreaker circuitBreaker;
 
     public EchoClientService(EchoClient echoClient,
-                             CircuitBreakerFactory<?, ?> circuitBreakerFactory) {
+                             CircuitBreakerRegistry cbRegistry) {
         this.echoClient = echoClient;
-        this.circuitBreaker = circuitBreakerFactory.create("demo-echo-service");
+        this.circuitBreaker = cbRegistry.circuitBreaker("demo-echo-service");
     }
 
     public String echo(String name) {
-        return circuitBreaker.run(
-                () -> echoClient.echo(name),
-                t -> echoFallback(name, unwrap(t))
-        );
+        return Decorators.ofSupplier(() -> echoClient.echo(name)).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> echoFallback(name, throwable))
+                .decorate()
+                .get();
     }
 
-    public String testError(String msg) {
-        return circuitBreaker.run(
-                () -> echoClient.triggerError(msg),
-                t -> echoErrorFallback(msg, unwrap(t))
-        );
-    }
-
-    public String safeEcho(String msg) {
-        return circuitBreaker.run(
-                () -> echoClient.triggerError(msg),
-                t -> safeEchoFallback(msg, unwrap(t))
-        );
-    }
-
+    // -------------------- Fallbacks --------------------
     private String echoFallback(String name, Throwable t) {
-        log.error("【熔断降级】echo失败, name={}, ex={}", name, t.toString());
-        return "name not found";
-    }
-
-    private String echoErrorFallback(String msg, Throwable t) {
-        log.error("【熔断降级】调用错误端点失败, msg={}, ex={}", msg, t.toString());
-        return "echo降级响应";
-    }
-
-    private String safeEchoFallback(String msg, Throwable t) {
-        log.warn("fallback: {}, ex={}", msg, t.toString());
-        return "fallback: " + msg;
+        return "【熔断降级】echo失败, name=" + name + ", errMsg={}" + unwrap(t).getMessage();
     }
 
     private Throwable unwrap(Throwable t) {
-        while (t instanceof org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException
-                && t.getCause() != null) {
-            t = t.getCause();
+        Throwable result = t;
+        while (result instanceof NoFallbackAvailableException
+                && result.getCause() != null) {
+            result = result.getCause();
         }
-        return t;
+        return result;
     }
 }
