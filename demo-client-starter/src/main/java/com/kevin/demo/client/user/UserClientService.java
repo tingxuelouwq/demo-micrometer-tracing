@@ -1,9 +1,10 @@
 package com.kevin.demo.client.user;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.decorators.Decorators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.stereotype.Service;
 
@@ -19,61 +20,61 @@ public class UserClientService {
     private final CircuitBreaker circuitBreaker;
 
     public UserClientService(UserClient userClient,
-                             CircuitBreakerFactory<?,?> circuitBreakerFactory) {
+                             CircuitBreakerRegistry cbRegistry) {
         this.userClient = userClient;
-        this.circuitBreaker = circuitBreakerFactory.create("userClient");
+        this.circuitBreaker = cbRegistry.circuitBreaker("demo-user-service");
     }
 
     // -------------------- Public API --------------------
 
     public User getUserByIdSync(Long id) {
-        return circuitBreaker.run(
-                () -> userClient.getUserByIdSync(id),
-                throwable -> getUserByIdFallback(id, throwable)
-        );
+        return Decorators.ofSupplier(() -> userClient.getUserByIdSync(id)).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> getUserByIdFallback(id, throwable))
+                .decorate()
+                .get();
     }
 
     public List<User> getAllUsersSync() {
-        return circuitBreaker.run(
-                () -> userClient.getAllUsersSync(),
-                this::getAllUsersFallback
-        );
+        return Decorators.ofSupplier(() -> userClient.getAllUsersSync()).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> getAllUsersFallback(throwable))
+                .decorate()
+                .get();
     }
 
     public User createUser(String name, String email) {
-        return circuitBreaker.run(
-                () -> userClient.createUser(name, email),
-                throwable -> createUserFallback(name, email, throwable)
-        );
+        return Decorators.ofSupplier(() -> userClient.createUser(name, email)).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> createUserFallback(name, email, throwable))
+                .decorate()
+                .get();
     }
 
     public String testError() {
-        return circuitBreaker.run(
-                () -> userClient.triggerError(),
-                this::userErrorFallback
-        );
+        return Decorators.ofSupplier(() -> userClient.triggerError()).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> userErrorFallback(throwable))
+                .decorate()
+                .get();
     }
 
     // -------------------- Fallbacks --------------------
 
     private User getUserByIdFallback(Long id, Throwable t) {
-        log.error("【熔断降级】获取用户失败，ID={}", id, unwrap(t));
+        log.error("【熔断降级】获取用户失败，ID={}, errMsg={}", id, unwrap(t).getMessage());
         return new User(id, "未知用户", "fallback@example.com");
     }
 
     private List<User> getAllUsersFallback(Throwable t) {
-        log.error("【熔断降级】获取用户列表失败", unwrap(t));
+        log.error("【熔断降级】获取用户列表失败, errMsg={}", unwrap(t).getMessage());
         return Collections.emptyList();
     }
 
     private User createUserFallback(String name, String email, Throwable t) {
-        log.error("【熔断降级】创建用户失败，name={}", name, unwrap(t));
+        log.error("【熔断降级】创建用户失败，name={}, errMsg={}", name, unwrap(t).getMessage());
         return new User(-1L, name + "【创建失败】", email);
     }
 
     private String userErrorFallback(Throwable t) {
-        log.error("【user熔断降级】调用错误端点失败", unwrap(t));
-        return "user降级响应";
+        log.error("【user熔断降级】调用错误端点失败, errMsg={}", unwrap(t).getMessage());
+        return "user降级响应, " + unwrap(t).getMessage();
     }
 
     private Throwable unwrap(Throwable t) {
