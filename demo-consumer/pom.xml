@@ -15,6 +15,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>org.xinhua.yd.rec</groupId>
+            <artifactId>demo-microservice-common-starter</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>com.kevin</groupId>
             <artifactId>demo-client-starter</artifactId>
             <version>0.0.1-SNAPSHOT</version>
@@ -26,13 +32,6 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>repackage</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
