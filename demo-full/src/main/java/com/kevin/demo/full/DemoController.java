@@ -68,17 +68,4 @@ public class DemoController {
     public String triggerErrorUser() {
         return userClientService.testError();
     }
-
-    /**
-     * 强制触发异常（用于测试熔断）
-     */
-    @GetMapping("/trigger-error-echo/{msg}")
-    public String triggerErrorEcho(@PathVariable String msg) {
-        return echoClientService.testError(msg);
-    }
-
-    @GetMapping("/safeEcho/{msg}")
-    public String test(@PathVariable String msg) {
-        return echoClientService.safeEcho(msg);
-    }
 }

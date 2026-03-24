@@ -16,18 +16,6 @@ spring:
         health-check-interval: 10s
         prefer-ip-address: true
         query-passing: true
-    # ==================== SCCB 熔断限流配置 ====================
-    circuitbreaker:
-      resilience4j:
-        configs:
-          default:
-            registerHealthIndicator: true
-            slidingWindowSize: 1
-            minimumNumberOfCalls: 1
-            failureRateThreshold: 1
-            waitDurationInOpenState: 3s
-            permittedNumberOfCallsInHalfOpenState: 1
-            automaticTransitionFromOpenToHalfOpenEnabled: true
   # ==================== 原生声明式 HTTP 客户端配置 ====================
   http:
     clients:
@@ -73,3 +61,16 @@ logging:
   kafka:
     bootstrap-servers: localhost:9092
     topic: zipkin
+
+# ==================== Resilience4j熔断限流配置 ====================
+resilience4j:
+  circuitbreaker:
+    instances:
+      echoClient:
+        register-health-indicator: true
+        sliding-window-size: 3
+        minimum-number-of-calls: 1
+        failure-rate-threshold: 50
+        wait-duration-in-open-state: 5s
+        permitted-number-of-calls-in-half-open-state: 1
+        automatic-transition-from-open-to-half-open-enabled: true

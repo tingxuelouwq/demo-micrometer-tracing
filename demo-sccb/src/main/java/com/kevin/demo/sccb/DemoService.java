@@ -3,13 +3,14 @@ package com.kevin.demo.sccb;
 import io.github.resilience4j.bulkhead.Bulkhead;
 import io.github.resilience4j.bulkhead.BulkheadFullException;
 import io.github.resilience4j.bulkhead.BulkheadRegistry;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
 import io.github.resilience4j.decorators.Decorators;
 import io.github.resilience4j.ratelimiter.RateLimiter;
 import io.github.resilience4j.ratelimiter.RateLimiterRegistry;
 import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import io.github.resilience4j.timelimiter.TimeLimiter;
 import io.github.resilience4j.timelimiter.TimeLimiterRegistry;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.concurrent.*;
@@ -18,16 +19,16 @@ import java.util.function.Supplier;
 @Service
 public class DemoService {
 
-    private final CircuitBreakerFactory<?,?> cbFactory;
+    private final CircuitBreakerRegistry cbRegistry;
     private final RateLimiterRegistry rateLimiterRegistry;
     private final TimeLimiterRegistry timeLimiterRegistry;
     private final BulkheadRegistry bulkheadRegistry;
     private final ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(3);
     private final ExecutorService executor = Executors.newFixedThreadPool(10);
 
-    public DemoService(CircuitBreakerFactory<?,?> cbFactory, RateLimiterRegistry rlReg, TimeLimiterRegistry tlReg,
+    public DemoService(CircuitBreakerRegistry cbRegistry, RateLimiterRegistry rlReg, TimeLimiterRegistry tlReg,
                        BulkheadRegistry bhReg) {
-        this.cbFactory = cbFactory;
+        this.cbRegistry = cbRegistry;
         this.rateLimiterRegistry = rlReg;
         this.timeLimiterRegistry = tlReg;
         this.bulkheadRegistry = bhReg;
@@ -53,13 +54,17 @@ public class DemoService {
      * If the test succeeds, it closes; if it fails, it reopens.
      */
     public String callWithCircuitBreaker() {
-        return cbFactory.create("cbService").run(
-                () -> {
-                    if (Math.random() > 0.5) throw new RuntimeException("Simulated failure");
+        CircuitBreaker circuitBreaker = cbRegistry.circuitBreaker("cbService");
+        return Decorators.ofSupplier(() -> {
+                    if (Math.random() > 0.5) {
+                        throw new RuntimeException("Simulated failure");
+                    }
                     return "CircuitBreaker success";
-                },
-                throwable -> "Fallback due to CircuitBreaker or other error: " + throwable.getMessage()
-        );
+                })
+                .withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> "Fallback due to CircuitBreaker or other error: " + throwable.getMessage())
+                .decorate()
+                .get();
     }
 
     /**
@@ -76,24 +81,26 @@ public class DemoService {
         TimeLimiter timeLimiter = timeLimiterRegistry.timeLimiter("tlService");
         Bulkhead bulkhead = bulkheadRegistry.bulkhead("bhService");
 
-        // 先组合 RateLimiter + Bulkhead
+        // Supplier simulating a slow call
+        Supplier<CompletionStage<String>> supplier = () ->
+                CompletableFuture.supplyAsync(() -> {
+                    try {
+                        Thread.sleep(3000); // deliberately longer than 2s timeout
+                        return "Unified success";
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                        throw new CompletionException(e);
+                    }
+                }, executor);
+
+        // Decorate with RL + BH
         Supplier<CompletionStage<String>> rateAndBulkheadDecorated =
-                Decorators.ofCompletionStage(() ->
-                                CompletableFuture.supplyAsync(() -> {
-                                    try {
-                                        Thread.sleep(3000);
-                                        return "RateLimiter/TimeLimiter/Bulkhead success";
-                                    } catch (InterruptedException e) {
-                                        Thread.currentThread().interrupt();
-                                        throw new CompletionException(e);
-                                    }
-                                }, executor)
-                        )
+                Decorators.ofCompletionStage(supplier)
                         .withRateLimiter(rateLimiter)
                         .withBulkhead(bulkhead)
                         .decorate();
 
-        // 再用 TimeLimiter 包装（这是关键！）
+        // Apply TimeLimiter last
         return timeLimiter.executeCompletionStage(scheduler, rateAndBulkheadDecorated)
                 .toCompletableFuture()
                 .exceptionally(this::handleFallback);

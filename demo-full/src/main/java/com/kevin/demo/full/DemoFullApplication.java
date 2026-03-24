@@ -7,10 +7,10 @@ import org.springframework.web.service.registry.ImportHttpServices;
 @SpringBootApplication
 @ImportHttpServices(group = "user-client", types = {UserClient.class})
 @ImportHttpServices(group = "echo-client", types = {EchoClient.class})
-public class DemoMicrometerTracingApplication {
+public class DemoFullApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(DemoMicrometerTracingApplication.class, args);
+        SpringApplication.run(DemoFullApplication.class, args);
     }
 
 }

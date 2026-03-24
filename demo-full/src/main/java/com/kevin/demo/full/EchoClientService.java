@@ -1,9 +1,10 @@
 package com.kevin.demo.full;
 
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.circuitbreaker.CircuitBreakerRegistry;
+import io.github.resilience4j.decorators.Decorators;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreaker;
-import org.springframework.cloud.client.circuitbreaker.CircuitBreakerFactory;
 import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException;
 import org.springframework.stereotype.Service;
 
@@ -16,47 +17,21 @@ public class EchoClientService {
     private final CircuitBreaker circuitBreaker;
 
     public EchoClientService(EchoClient echoClient,
-                             CircuitBreakerFactory<?,?> circuitBreakerFactory) {
+                             CircuitBreakerRegistry cbRegistry) {
         this.echoClient = echoClient;
-        this.circuitBreaker = circuitBreakerFactory.create("echoClient");
+        this.circuitBreaker = cbRegistry.circuitBreaker("echoClient");
     }
 
     public String echo(String name) {
-        return circuitBreaker.run(
-                () -> echoClient.echo(name),
-                throwable -> echoFallback(name, throwable)
-        );
-    }
-
-    public String testError(String msg) {
-        return circuitBreaker.run(
-                () -> echoClient.triggerError(msg),
-                throwable -> echoErrorFallback(msg, throwable)
-        );
-    }
-
-    public String safeEcho(String msg) {
-        return circuitBreaker.run(
-                () -> echoClient.triggerError(msg),
-                throwable -> safeEchoFallback(msg, throwable)
-        );
+        return Decorators.ofSupplier(() -> echoClient.echo(name)).withCircuitBreaker(circuitBreaker)
+                .withFallback(throwable -> echoFallback(name, throwable))
+                .decorate()
+                .get();
     }
 
     // -------------------- Fallbacks --------------------
-
     private String echoFallback(String name, Throwable t) {
-        log.error("【熔断降级】echo失败, name={}", name, unwrap(t));
-        return "name not found";
-    }
-
-    private String echoErrorFallback(String msg, Throwable t) {
-        log.error("【熔断降级】调用错误端点失败, msg={}", msg, unwrap(t));
-        return "echo降级响应";
-    }
-
-    private String safeEchoFallback(String msg, Throwable t) {
-        log.warn("fallback: {}", msg, unwrap(t));
-        return "fallback: " + msg;
+        return "【熔断降级】echo失败, name=" + name + ", errMsg={}" + unwrap(t).getMessage();
     }
 
     private Throwable unwrap(Throwable t) {
