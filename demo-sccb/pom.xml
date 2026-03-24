@@ -4,37 +4,53 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-            <groupId>com.kevin</groupId>
-            <artifactId>demo-pom-parent</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <relativePath/>
-        </parent>
+        <groupId>com.kevin</groupId>
+        <artifactId>demo-pom-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+        <relativePath/>
+    </parent>
 
-        <artifactId>demo-sccb</artifactId>
-        <packaging>jar</packaging>
+    <artifactId>demo-sccb</artifactId>
+    <packaging>jar</packaging>
 
-        <dependencies>
-            <!-- SCCB with Resilience4j backend -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
-            </dependency>
+    <dependencies>
+        <!-- SCCB with Resilience4j backend -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-resilience4j</artifactId>
+        </dependency>
 
-            <!-- Resilience4j modules -->
-            <dependency>
-                <groupId>io.github.resilience4j</groupId>
-                <artifactId>resilience4j-all</artifactId>
-            </dependency>
+        <!-- Resilience4j modules -->
+        <dependency>
+            <groupId>io.github.resilience4j</groupId>
+            <artifactId>resilience4j-all</artifactId>
+        </dependency>
 
-            <!-- Web + Actuator -->
-            <dependency>
+        <!-- Web + Actuator -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-            </dependency>
-        </dependencies>
-    </project>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>repackage</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>
 
