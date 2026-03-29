@@ -6,73 +6,18 @@ spring:
     name: demo-gateway
   cloud:
     gateway:
-      routes:
-        - id: demo-echo-service
-          uri: lb://demo-echo-service
-          predicates:
-            - Path=/api/v1/echo/**
-          filters:
-            - StripPrefix=2
-        - id: demo-user-service
-          uri: lb://demo-user-service
-          predicates:
-            - Path=/api/v1/users/**
-          filters:
-            - StripPrefix=2
-    # ==================== Consul 服务注册与发现 ====================
-    consul:
-      host: localhost
-      port: 8500
-      token: 5c72f559-9ef9-48b4-99c7-23e9092f9a0f
-      discovery:
-        service-name: ${spring.application.name}
-        instance-id: ${spring.application.name}_${spring.cloud.client.ip-address}_${server.port}
-        health-check-interval: 10s
-        prefer-ip-address: true
-        query-passing: true
-    # ==================== SCCB 熔断限流配置 ====================
-    circuitbreaker:
-      resilience4j:
-        configs:
-          default:
-            registerHealthIndicator: true
-            slidingWindowSize: 1
-            minimumNumberOfCalls: 1
-            failureRateThreshold: 1
-            waitDurationInOpenState: 3s
-            permittedNumberOfCallsInHalfOpenState: 1
-            automaticTransitionFromOpenToHalfOpenEnabled: true
-  # ==================== 原生声明式 HTTP 客户端配置 ====================
-  http:
-    clients:
-      # 全局：较宽松，给连接池留有余地
-      connect-timeout: 3s
-      read-timeout: 10s
-
-management:
-  # ==================== Prometheus 指标配置 ====================
-  endpoints:
-    web:
-      exposure:
-        # 暴露 prometheus 端点，也可暴露所有端点: "*"
-        include: health,info,prometheus,metrics,circuitbreakers,ratelimiters,retries,bulkheads
-      base-path: /actuator  # 端点基础路径
-  metrics:
-    tags:
-      application: ${spring.application.name}  # 为所有指标添加应用标签
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true  # 启用 HTTP 请求直方图
-  # ==================== 链路追踪配置====================
-  tracing:
-    sampling:
-      probability: 1.0
-    export:
-      zipkin:
-        endpoint: http://localhost:9411/api/v2/spans
-
-# ==================== Kafka 日志配置 ====================
-logging:
-  kafka:
-    bootstrap-servers: localhost:9092
-    topic: zipkin
+      server:
+        webflux:
+          routes:
+            - id: demo-echo-service
+              uri: lb://demo-echo-service
+              predicates:
+                - Path=/api/v1/api/echo/**
+              filters:
+                - StripPrefix=2
+            - id: demo-user-service
+              uri: lb://demo-user-service
+              predicates:
+                - Path=/api/v1/api/users/**
+              filters:
+                - StripPrefix=2
