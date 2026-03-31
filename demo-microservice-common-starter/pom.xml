@@ -15,28 +15,10 @@
     <description>demo-microservice-common-starter</description>
 
     <dependencies>
-        <!-- Spring Boot’s support for Micrometer Tracing over OpenTelemetry-->
+        <!-- Spring Boot Zipkin Starter (includes Brave tracing and MDC propagation) -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-micrometer-tracing-opentelemetry</artifactId>
-        </dependency>
-
-        <!-- bridges the Micrometer Observation API to OpenTelemetry -->
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-otel</artifactId>
-        </dependency>
-
-        <!-- Spring Boot’s support for Zipkin -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-zipkin</artifactId>
-        </dependency>
-
-        <!-- OpenTelemetry exporter that reports traces to Zipkin -->
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-exporter-zipkin</artifactId>
+            <artifactId>spring-boot-starter-zipkin</artifactId>
         </dependency>
 
         <!-- Spring Boot Actuator - 暴露指标端点 -->
