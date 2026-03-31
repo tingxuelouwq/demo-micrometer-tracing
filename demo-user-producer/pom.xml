@@ -9,6 +9,7 @@
         <relativePath>../demo-pom-parent/pom.xml</relativePath>
     </parent>
 
+    <version>2026.1.1</version>
     <artifactId>demo-user-producer</artifactId>
     <packaging>jar</packaging>
 
