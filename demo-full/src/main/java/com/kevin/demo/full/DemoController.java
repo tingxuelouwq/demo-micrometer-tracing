@@ -12,10 +12,10 @@ import java.util.List;
 public class DemoController {
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 
-    private final EchoClient echoClient;
+    private final EchoClientService echoClientService;
 
-    public DemoController(EchoClient echoClient) {
-        this.echoClient = echoClient;
+    public DemoController(EchoClientService echoClientService) {
+        this.echoClientService = echoClientService;
     }
 
     @GetMapping("/hello")
@@ -27,16 +27,8 @@ public class DemoController {
     }
 
     @GetMapping("/echo/{name}")
-    @Observed(name = "echo.name",
-            contextualName = "echo-name-sync",
-            lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public String echo(@PathVariable String name) {
         log.info("echo {} ", name);
-        return echoClient.echo(name);
-    }
-
-    @GetMapping("/echo/time/{name}")
-    public String echoTime(@PathVariable String name) {
-        return echoClient.echoTime(name);
+        return echoClientService.echo(name);
     }
 }
