@@ -38,7 +38,7 @@ public class EchoClientService {
 
     // -------------------- Fallbacks --------------------
     private String echoFallback(String name, Throwable t) {
-        return "【熔断降级】echo失败, name=" + name + ", errMsg={}" + unwrap(t).getMessage();
+        return "【熔断降级】echo失败, name=" + name + ", errMsg=" + unwrap(t).getMessage();
     }
 
     private Throwable unwrap(Throwable t) {
