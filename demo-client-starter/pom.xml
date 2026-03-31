@@ -6,9 +6,9 @@
 
     <parent>
         <groupId>com.kevin</groupId>
-        <artifactId>demo-pom-parent</artifactId>
+        <artifactId>demo-dependencies</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../demo-pom-parent/pom.xml</relativePath>
+        <relativePath>../demo-dependencies/pom.xml</relativePath>
     </parent>
 
     <artifactId>demo-client-starter</artifactId>

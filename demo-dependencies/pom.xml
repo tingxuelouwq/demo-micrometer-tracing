@@ -11,9 +11,9 @@
     </parent>
 
     <groupId>com.kevin</groupId>
-    <artifactId>demo-pom-parent</artifactId>
+    <artifactId>demo-dependencies</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>demo-pom-parent</name>
+    <name>demo-dependencies</name>
     <packaging>pom</packaging>
 
     <properties>
