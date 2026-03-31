@@ -27,6 +27,7 @@ public class DemoController {
             contextualName = "echo-name-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
     public String echo(@PathVariable String name) {
+        logger.info("user-consumer echo: " + name);
         return echoClientService.echo(name);
     }
 
