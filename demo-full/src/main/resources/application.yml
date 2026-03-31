@@ -23,8 +23,6 @@ spring:
       connect-timeout: 1s
       read-timeout: 2s
     serviceclient:
-      user-client:
-        base-url: "lb://demo-full"
       echo-client:
         base-url: "lb://demo-full"
 
@@ -62,8 +60,8 @@ resilience4j:
     configs:
       default:
         register-health-indicator: true
-        sliding-window-size: 3
-        minimum-number-of-calls: 1
+        sliding-window-size: 2
+        minimum-number-of-calls: 2
         failure-rate-threshold: 50
         wait-duration-in-open-state: 5s
         permitted-number-of-calls-in-half-open-state: 1
