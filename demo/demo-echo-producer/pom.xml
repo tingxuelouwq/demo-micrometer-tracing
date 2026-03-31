@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.kevin</groupId>
-        <artifactId>demo-dependencies</artifactId>
+        <artifactId>demo</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath>../demo-dependencies/pom.xml</relativePath>
+        <relativePath>../pom.xml</relativePath>
     </parent>
 
-    <artifactId>demo-gateway</artifactId>
+    <artifactId>demo-echo-producer</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
@@ -18,10 +18,9 @@
             <artifactId>demo-microservice-common-starter</artifactId>
         </dependency>
 
-        <!-- NEW Spring Cloud Gateway for Boot 4.x -->
         <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 

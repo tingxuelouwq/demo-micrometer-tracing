@@ -12,10 +12,7 @@
         <module>demo-dependencies</module>
         <module>demo-microservice-common-starter</module>
         <module>demo-client-starter</module>
-        <module>demo-gateway</module>
-        <module>demo-echo-producer</module>
-        <module>demo-user-producer</module>
-        <module>demo-consumer</module>
+        <module>demo</module>
         <module>demo-sccb</module>
         <module>demo-full</module>
     </modules>

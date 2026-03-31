@@ -21,3 +21,9 @@ spring:
                 - Path=/api/v1/api/users/**
               filters:
                 - StripPrefix=2
+            - id: demo-consumer-service
+              uri: lb://demo-consumer-service
+              predicates:
+                - Path=/api/v1/consumer/**
+              filters:
+                - StripPrefix=3

@@ -22,7 +22,7 @@ public class DemoController {
         this.userClientService = userClientService;
     }
 
-    @GetMapping("/echo/{name}")
+    @GetMapping("/api/echo/{name}")
     @Observed(name = "echo.name",
             contextualName = "echo-name-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
@@ -30,12 +30,12 @@ public class DemoController {
         return echoClientService.echo(name);
     }
 
-    @GetMapping("/echo/time/{name}")
+    @GetMapping("/api/echo/time/{name}")
     public String echoTime(@PathVariable String name) {
         return echoClientService.echoTime(name);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/api/users/{id}")
     @Observed(name = "user.getById",
             contextualName = "fetching-user-by-id-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
@@ -43,7 +43,7 @@ public class DemoController {
         return userClientService.getUserByIdSync(id);
     }
 
-    @GetMapping("/users")
+    @GetMapping("/api/users")
     @Observed(name = "user.getAll",
             contextualName = "fetching-all-users-sync",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
@@ -51,7 +51,7 @@ public class DemoController {
         return userClientService.getAllUsersSync();
     }
 
-    @PostMapping("/users")
+    @PostMapping("/api/users")
     @Observed(name = "user.create",
             contextualName = "creating-user",
             lowCardinalityKeyValues = {"client", "http-exchange", "mode", "sync"})
@@ -62,7 +62,7 @@ public class DemoController {
     /**
      * 强制触发异常（用于测试熔断）
      */
-    @GetMapping("/trigger-error-user")
+    @GetMapping("/api/trigger-error-user")
     public String triggerErrorUser() {
         return userClientService.testError();
     }
