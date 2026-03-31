@@ -6,4 +6,11 @@
     <groupId>com.kevin</groupId>
     <artifactId>demo-micrometer-tracing</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>demo-pom-parent</module>
+        <module>demo-microservice-common-starter</module>
+        <module>demo-client-starter</module>
+    </modules>
 </project>

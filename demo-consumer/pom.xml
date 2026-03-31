@@ -5,9 +5,9 @@
 
     <parent>
         <groupId>com.kevin</groupId>
-        <artifactId>demo-microservice-parent</artifactId>
+        <artifactId>demo-pom-parent</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-        <relativePath/>
+        <relativePath>../demo-pom-parent/pom.xml</relativePath>
     </parent>
 
     <artifactId>demo-consumer</artifactId>
@@ -15,15 +15,13 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.xinhua.yd.rec</groupId>
+            <groupId>com.kevin</groupId>
             <artifactId>demo-microservice-common-starter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.kevin</groupId>
             <artifactId>demo-client-starter</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 
