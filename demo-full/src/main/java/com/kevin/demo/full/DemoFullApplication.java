@@ -5,7 +5,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.web.service.registry.ImportHttpServices;
 
 @SpringBootApplication
-@ImportHttpServices(group = "user-client", types = {UserClient.class})
 @ImportHttpServices(group = "echo-client", types = {EchoClient.class})
 public class DemoFullApplication {
 
