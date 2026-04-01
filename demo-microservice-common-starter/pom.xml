@@ -43,7 +43,6 @@
         <dependency>
             <groupId>net.logstash.logback</groupId>
             <artifactId>logstash-logback-encoder</artifactId>
-            <version>8.0</version>
         </dependency>
 
         <!-- Kafka 客户端（logback-kafka-appender需要） - 日志 -->

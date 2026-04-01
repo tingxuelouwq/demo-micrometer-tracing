@@ -17,8 +17,22 @@
     <packaging>pom</packaging>
 
     <properties>
-        <spring-cloud.version>2025.1.1</spring-cloud.version>
+        <!-- 框架版本号 -->
         <demo.version>0.0.1-SNAPSHOT</demo.version>
+
+        <!-- 基础环境 -->
+        <java.version>21</java.version>
+        <maven.compiler.source>${java.version}</maven.compiler.source>
+        <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <!-- Spring Cloud 版本（Boot Parent 不包含，需额外定义） -->
+        <spring-cloud.version>2025.1.1</spring-cloud.version>
+
+        <!-- 其他组件版本 -->
+        <!-- 日志相关 -->
+        <logstash-logback-encoder.version>8.0</logstash-logback-encoder.version>
     </properties>
 
     <dependencyManagement>
@@ -32,6 +46,15 @@
                 <scope>import</scope>
             </dependency>
 
+            <!-- 其他非 Spring 管理的依赖 -->
+            <!-- Logstash Logback Encoder -->
+            <dependency>
+                <groupId>net.logstash.logback</groupId>
+                <artifactId>logstash-logback-encoder</artifactId>
+                <version>${logstash-logback-encoder.version}</version>
+            </dependency>
+
+            <!-- 框架 Starters (硬编码版本，避免子项目继承时 ${project.version} 解析错误) -->
             <dependency>
                 <groupId>com.kevin</groupId>
                 <artifactId>demo-microservice-common-starter</artifactId>

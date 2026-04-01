@@ -15,8 +15,59 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 自定义 Kafka Logback Appender
- * 使用异步方式发送日志到 Kafka，避免阻塞应用
+ * 自定义 Kafka Logback Appender，用于将日志异步发送到 Kafka。
+ *
+ * <p>在 {@code logback-spring.xml} 中配置使用，支持从 {@code application.yml} 读取 Kafka 连接配置。</p>
+ *
+ * <p><b>核心特性：</b></p>
+ * <ul>
+ *   <li>从 {@code application.yml} 的 {@code logging.kafka} 配置读取 {@code bootstrap-servers} 和 {@code topic}</li>
+ *   <li>自动集成 </li>
+ *   <li>无需手动处理 traceId/spanId，MDC 中已自动包含</li>
+ *   <li>使用异步方式发送日志到 Kafka，避免阻塞应用</li>
+ * </ul>
+ *
+ * <p><b>配置数据流：</b></p>
+ * <pre>
+ * application.yml (logging.kafka.bootstrap-servers)
+ *     ↓
+ * springProperty (LOGGING_KAFKA_BOOTSTRAP_SERVERS)
+ *     ↓
+ * logback-spring.xml (${LOGGING_KAFKA_BOOTSTRAP_SERVERS})
+ *     ↓
+ * KafkaAppender.setBootstrapServers()
+ *     ↓
+ * KafkaProducer 连接到 Kafka
+ * </pre>
+ *
+ * <p><b>实现说明：</b></p>
+ * <p>Micrometer Tracing 默认实现是 Brave。虽然 Spring Boot 4.0 未来推荐使用 OpenTelemetry，但目前集成上还是 Brave 更为成熟。
+ * 若强制使用 OpenTelemetry，需要排除 Brave 依赖，或者等未来版本更新。现阶段如果类路径同时存在 Brave 和 OTel，Brave 优先。</p>
+ *
+ * <p><b>配置示例（application.yml）：</b></p>
+ * <pre>
+ * logging:
+ *   kafka:
+ *     bootstrap-servers: ${KAFKA_SERVER:localhost:9092}
+ *     topic: ${KAFKA_TOPIC:app-logs}
+ * </pre>
+ *
+ * <p><b>配置示例（logback-spring.xml）：</b></p>
+ * <pre>
+ * &lt;springProperty scope="context" name="LOGGING_KAFKA_BOOTSTRAP_SERVERS"
+ *     source="logging.kafka.bootstrap-servers" defaultValue="localhost:9092"/&gt;
+ * &lt;springProperty scope="context" name="LOGGING_KAFKA_TOPIC"
+ *     source="logging.kafka.topic" defaultValue="app-logs"/&gt;
+ *
+ * &lt;appender name="KAFKA" class="com.kevin.demo.micro.common.logging.KafkaAppender"&gt;
+ *     &lt;bootstrapServers&gt;${LOGGING_KAFKA_BOOTSTRAP_SERVERS}&lt;/bootstrapServers&gt;
+ *     &lt;topic&gt;${LOGGING_KAFKA_TOPIC}&lt;/topic&gt;
+ *     &lt;encoder&gt;...&lt;/encoder&gt;
+ * &lt;/appender&gt;
+ * </pre>
+ *
+ * @author 王琪
+ * @since 2026/4/1 15:51
  */
 public class KafkaAppender extends AppenderBase<ILoggingEvent> {
 

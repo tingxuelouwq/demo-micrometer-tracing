@@ -22,7 +22,7 @@ import java.util.concurrent.TimeUnit;
  * <p><b>核心特性：</b></p>
  * <ul>
  *   <li>从 {@code application.yml} 的 {@code logging.kafka} 配置读取 {@code bootstrap-servers} 和 {@code topic}</li>
- *   <li>自动集成 Micrometer Tracing → Brave → MDC → Logback → Kafka</li>
+ *   <li>自动集成 </li>
  *   <li>无需手动处理 traceId/spanId，MDC 中已自动包含</li>
  *   <li>使用异步方式发送日志到 Kafka，避免阻塞应用</li>
  * </ul>

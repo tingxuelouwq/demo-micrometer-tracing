@@ -16,9 +16,6 @@ public class EchoController {
     @GetMapping("/{name}")
     String echo(@PathVariable String name) {
         logger.info("echo {} ", name);
-        if (Math.random() > 0.5) {
-            throw new RuntimeException("Simulated failure");
-        }
         return "CircuitBreaker success, name=[" + name + "]";
     }
 }

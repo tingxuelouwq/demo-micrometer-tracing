@@ -7,15 +7,21 @@ spring:
   cloud:
     # ==================== Consul 服务注册与发现 ====================
     consul:
-      host: localhost
-      port: 8500
-      token: 5c72f559-9ef9-48b4-99c7-23e9092f9a0f
+      host: ${CONSUL_HOST:localhost}
+      port: ${CONSUL_PORT:8500}
       discovery:
+        acl-token: ${CONSUL_TOKEN:5c72f559-9ef9-48b4-99c7-23e9092f9a0f}
         service-name: ${spring.application.name}
         instance-id: ${spring.application.name}_${spring.cloud.client.ip-address}_${server.port}
         health-check-interval: 10s
         prefer-ip-address: true
         query-passing: true
+    # ==================== 负载均衡配置 ====================
+    loadbalancer:
+      retry:
+        enabled: true
+      cache:
+        enabled: false
   # ==================== 原生声明式 HTTP 客户端配置 ====================
   http:
     clients:
@@ -23,8 +29,6 @@ spring:
       connect-timeout: 1s
       read-timeout: 2s
     serviceclient:
-      user-client:
-        base-url: "lb://demo-full"
       echo-client:
         base-url: "lb://demo-full"
 
@@ -34,28 +38,23 @@ management:
     web:
       exposure:
         # 暴露 prometheus 端点，也可暴露所有端点: "*"
-        include: health,info,prometheus,metrics,circuitbreakers,ratelimiters,retries,bulkheads
-      base-path: /actuator  # 端点基础路径
-  metrics:
-    tags:
-      application: ${spring.application.name}  # 为所有指标添加应用标签
-    distribution:
-      percentiles-histogram:
-        http.server.requests: true  # 启用 HTTP 请求直方图
+        include: health,info,prometheus,metrics,circuitbreakers
+  endpoint:
+    health:
+      show-details: always
   # ==================== 链路追踪配置====================
   tracing:
     sampling:
       probability: 1.0
-    propagation:
-      type: w3c
+    export:
+      zipkin:
+        endpoint: http://${ZIPKIN_SERVER:localhost:9411}/api/v2/spans
 
 # ==================== Kafka 日志配置 ====================
-# 剥离日志kafka配置，不占用默认spring.kafka配置
-tracing:
+logging:
   kafka:
-    bootstrap-servers: ${TRACING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    template:
-      defaultTopic: zipkin
+    bootstrap-servers: ${LOGGING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    topic: ${LOGGING_KAFKA_TOPIC:zipkin}
 
 # ==================== Resilience4j熔断限流配置 ====================
 #resilience4j:
