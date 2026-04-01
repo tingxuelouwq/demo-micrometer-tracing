@@ -46,30 +46,31 @@ management:
   tracing:
     sampling:
       probability: 1.0
-    export:
-      zipkin:
-        endpoint: http://localhost:9411/api/v2/spans
+    propagation:
+      type: w3c
 
 # ==================== Kafka 日志配置 ====================
-logging:
+# 剥离日志kafka配置，不占用默认spring.kafka配置
+tracing:
   kafka:
-    bootstrap-servers: localhost:9092
-    topic: zipkin
+    bootstrap-servers: ${TRACING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    template:
+      defaultTopic: zipkin
 
 # ==================== Resilience4j熔断限流配置 ====================
-resilience4j:
-  circuitbreaker:
-    configs:
-      default:
-        register-health-indicator: true
-        sliding-window-size: 3
-        minimum-number-of-calls: 1
-        failure-rate-threshold: 50
-        wait-duration-in-open-state: 5s
-        permitted-number-of-calls-in-half-open-state: 1
-        automatic-transition-from-open-to-half-open-enabled: true
-  timelimiter:
-    configs:
-      default:
-        timeout-duration: 10s
-        cancel-running-future: true
+#resilience4j:
+#  circuitbreaker:
+#    configs:
+#      default:
+#        register-health-indicator: true
+#        sliding-window-size: 3
+#        minimum-number-of-calls: 1
+#        failure-rate-threshold: 50
+#        wait-duration-in-open-state: 5s
+#        permitted-number-of-calls-in-half-open-state: 1
+#        automatic-transition-from-open-to-half-open-enabled: true
+#  timelimiter:
+#    configs:
+#      default:
+#        timeout-duration: 10s
+#        cancel-running-future: true

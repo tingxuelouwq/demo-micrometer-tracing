@@ -20,9 +20,14 @@
         </dependency>
 
         <dependency>
-            <groupId>com.kevin</groupId>
-            <artifactId>demo-client-starter</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+
+<!--        <dependency>-->
+<!--            <groupId>com.kevin</groupId>-->
+<!--            <artifactId>demo-client-starter</artifactId>-->
+<!--        </dependency>-->
     </dependencies>
 
     <build>

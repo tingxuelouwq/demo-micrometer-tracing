@@ -10,7 +10,7 @@
     <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
 
     <!-- 通过 Kafka 发送日志的 Appender（自定义实现，兼容 Java 21） -->
-    <appender name="KAFKA" class="com.kevin.demo.full.KafkaAppender">
+    <appender name="KAFKA" class="com.kevin.demo.micro.common.logging.KafkaAppender">
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>${LOGSTASH_LEVEL:-INFO}</level>
         </filter>

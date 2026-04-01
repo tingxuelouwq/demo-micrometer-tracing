@@ -11,10 +11,10 @@ import java.util.List;
 public class DemoController {
     private static final Logger log = LoggerFactory.getLogger(DemoController.class);
 
-    private final UserClientService userClientService;
-    private final EchoClientService echoClientService;
+    private final UserClient userClientService;
+    private final EchoClient echoClientService;
 
-    public DemoController(UserClientService userClientService, EchoClientService echoClientService) {
+    public DemoController(UserClient userClientService, EchoClient echoClientService) {
         this.userClientService = userClientService;
         this.echoClientService = echoClientService;
     }
@@ -65,13 +65,5 @@ public class DemoController {
     @GetMapping("/echo/time/{name}")
     public String echoTime(@PathVariable String name) {
         return echoClientService.echoTime(name);
-    }
-
-    /**
-     * 强制触发异常（用于测试熔断）
-     */
-    @GetMapping("/trigger-error-user")
-    public String triggerErrorUser() {
-        return userClientService.testError();
     }
 }
