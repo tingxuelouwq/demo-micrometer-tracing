@@ -1,1 +1,2 @@
-com.kevin.demo.micro.common.MicroserviceCommonConfiguration
+com.kevin.demo.micro.common.autoconfigure.TracingConfiguration
+com.kevin.demo.micro.common.autoconfigure.CircuitBreakerConfiguration
