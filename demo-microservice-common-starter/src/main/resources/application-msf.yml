@@ -1,49 +1,37 @@
-# MSF Microservice Default Configuration
-# This file is loaded automatically by msf-microservice-starter
-
-# Server Configuration
-server:
-  shutdown: ${SERVER_SHUTDOWN:graceful}
 spring:
   cloud:
-    # Consul Service Discovery
     consul:
       host: ${CONSUL_HOST:localhost}
       port: ${CONSUL_PORT:8500}
       discovery:
-        health-check-interval: ${CONSUL_HC_INTERVAL:10s}
+        acl-token: ${CONSUL_TOKEN:5c72f559-9ef9-48b4-99c7-23e9092f9a0f}
+        service-name: ${spring.application.name}
         instance-id: ${spring.application.name}_${spring.cloud.client.ip-address}_${server.port}
-        service-name: ${SERVICE_NAME:${spring.application.name}}
-        acl-token: ${CONSUL_TOKEN:}
-        prefer-ip-address: ${CONSUL_PREFER_IP:true}
-        query-passing: ${QUERY_PASSING:true}
-        metadata:
-          user-name: ${spring.security.user.name}
-          user-password: ${spring.security.user.password}
-
-    # Load Balancer
+        health-check-interval: 10s
+        prefer-ip-address: true
+        query-passing: true
     loadbalancer:
       retry:
-        enabled: ${LB_RETRY:true}
+        enabled: true
       cache:
-        enabled: ${LB_CACHE:false}
+        enabled: false
 
-# Actuator Configuration
 management:
   endpoints:
     web:
       exposure:
-        include: '*'
+        include: health,info,prometheus,metrics,circuitbreakers
   endpoint:
     health:
       show-details: always
   tracing:
     sampling:
       probability: 1.0
+    export:
+      zipkin:
+        endpoint: http://${ZIPKIN_SERVER:localhost:9411}/api/v2/spans
 
-# 剥离日志kafka配置，不占用默认spring.kafka配置
-tracing:
+logging:
   kafka:
-    bootstrap-servers: ${TRACING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    template:
-      defaultTopic: zipkin
+    bootstrap-servers: ${LOGGING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    topic: ${LOGGING_KAFKA_TOPIC:zipkin}

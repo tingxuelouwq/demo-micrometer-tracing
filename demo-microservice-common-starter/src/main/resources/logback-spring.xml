@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
-    <!-- Kafka 配置 -->
-    <variable name="LOGGING_KAFKA_BOOTSTRAP_SERVERS" value="${LOGGING_KAFKA_BOOTSTRAP_SERVERS:-localhost:9092}" />
-    <variable name="LOGGING_KAFKA_TOPIC" value="${LOGGING_KAFKA_TOPIC:-app-logs}" />
-    <!--引用spring变量-->
+
+    <!-- 使用 springProperty 直接读取 application.yml -->
+    <springProperty scope="context" name="LOGGING_KAFKA_BOOTSTRAP_SERVERS" source="logging.kafka.bootstrap-servers" defaultValue="localhost:9092"/>
+    <springProperty scope="context" name="LOGGING_KAFKA_TOPIC" source="logging.kafka.topic" defaultValue="app-logs"/>
     <springProperty scope="context" name="application-name" source="spring.application.name"/>
+
     <include resource="org/springframework/boot/logging/logback/console-appender.xml"/>
     <include resource="org/springframework/boot/logging/logback/file-appender.xml"/>
 
