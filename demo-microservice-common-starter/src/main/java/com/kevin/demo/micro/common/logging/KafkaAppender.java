@@ -66,8 +66,8 @@ import java.util.concurrent.TimeUnit;
  * &lt;/appender&gt;
  * </pre>
  *
- * @author Kevin
- * @since 2026-04-01
+ * @author 王琪
+ * @since 2026/4/1 15:51
  */
 public class KafkaAppender extends AppenderBase<ILoggingEvent> {
 

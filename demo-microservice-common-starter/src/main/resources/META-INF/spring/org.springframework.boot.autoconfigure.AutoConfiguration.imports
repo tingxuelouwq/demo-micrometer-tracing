@@ -1,0 +1,2 @@
+com.kevin.demo.micro.common.autoconfigure.YamlAutoConfiguration
+com.kevin.demo.micro.common.autoconfigure.TracingConfiguration
