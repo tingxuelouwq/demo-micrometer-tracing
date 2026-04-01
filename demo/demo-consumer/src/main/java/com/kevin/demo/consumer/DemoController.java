@@ -1,8 +1,5 @@
 package com.kevin.demo.consumer;
 
-import com.kevin.demo.client.echo.EchoClientService;
-import com.kevin.demo.client.user.User;
-import com.kevin.demo.client.user.UserClientService;
 import io.micrometer.observation.annotation.Observed;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

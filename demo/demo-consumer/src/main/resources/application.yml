@@ -4,3 +4,9 @@ server:
 spring:
   application:
     name: demo-consumer-service
+  http:
+    serviceclient:
+      demo-echo-service:
+        base-url: lb://demo-echo-service
+      demo-user-service:
+        base-url: lb://demo-user-service
