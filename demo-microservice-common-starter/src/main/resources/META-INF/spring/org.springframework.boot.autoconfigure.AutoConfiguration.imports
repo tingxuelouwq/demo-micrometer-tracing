@@ -1,2 +1,3 @@
 com.kevin.demo.micro.common.autoconfigure.YamlAutoConfiguration
 com.kevin.demo.micro.common.autoconfigure.TracingConfiguration
+com.kevin.demo.micro.common.autoconfigure.CircuitBreakerConfiguration

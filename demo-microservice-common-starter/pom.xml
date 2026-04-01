@@ -56,6 +56,12 @@
             <artifactId>jakarta.servlet-api</artifactId>
             <scope>provided</scope>
         </dependency>
+
+        <!-- Spring Cloud CircuitBreaker with Framework Retry -->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-circuitbreaker-framework-retry</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

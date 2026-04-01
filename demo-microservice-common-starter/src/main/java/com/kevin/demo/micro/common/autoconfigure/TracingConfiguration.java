@@ -1,6 +1,7 @@
 package com.kevin.demo.micro.common.autoconfigure;
 
 import io.micrometer.observation.ObservationPredicate;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
  * @author 王琪
  * @since 2026/3/31 16:58
  */
-@Configuration
+@AutoConfiguration
 public class TracingConfiguration {
 
     /**
