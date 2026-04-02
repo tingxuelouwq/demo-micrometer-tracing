@@ -24,12 +24,14 @@ public class CircuitBreakerConfiguration {
     /**
      * 默认熔断器配置
      * <p>
-     * 重试策略：使用 Spring Framework 7 默认重试策略
+     * 重试策略：使用 Spring Framework 7 默认重试策略，如果调用抛出异常，会根据 RetryPolicy 自动重试。
      * <p>
      * 熔断策略：
      * <ul>
-     *   <li>打开超时：20 秒（熔断器打开后等待 20 秒转为半开状态）</li>
-     *   <li>重置超时：5 秒（无失败后 5 秒自动重置为关闭状态）</li>
+     *   <li>当失败次数达到阈值，熔断器进入 打开状态。</li>
+     *   <li>在打开状态下，所有调用直接走 fallback，不再尝试。</li>
+     *   <li>openTimeout(20s)：熔断器保持打开 20 秒后进入半开状态。</li>
+     *   <li>resetTimeout(5s)：在半开状态下，如果 5 秒内没有失败，会自动恢复为关闭状态。</li>
      * </ul>
      * <p>
      * 注意：如需自定义重试次数、超时时间、异常类型等，请在应用中定义自己的 Customizer Bean，例如：
