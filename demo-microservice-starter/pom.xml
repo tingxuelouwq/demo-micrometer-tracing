@@ -10,9 +10,9 @@
         <relativePath>../demo-dependencies/pom.xml</relativePath>
     </parent>
 
-    <artifactId>demo-microservice-common-starter</artifactId>
-    <name>demo-microservice-common-starter</name>
-    <description>demo-microservice-common-starter</description>
+    <artifactId>demo-microservice-starter</artifactId>
+    <name>demo-microservice-starter</name>
+    <description>demo-microservice-starter</description>
 
     <dependencies>
         <!-- Consul 服务注册发现 -->

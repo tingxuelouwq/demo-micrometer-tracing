@@ -16,7 +16,7 @@ import java.util.Properties;
  * @since 2026/4/1 15:57
  */
 @AutoConfiguration
-@PropertySource(value = "classpath:application-micro-common.yml", factory = YamlAutoConfiguration.YamlPropertySourceFactory.class)
+@PropertySource(value = "classpath:application-microservice-starter.yml", factory = YamlAutoConfiguration.YamlPropertySourceFactory.class)
 public class YamlAutoConfiguration {
 
     public static class YamlPropertySourceFactory implements PropertySourceFactory {
