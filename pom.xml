@@ -11,7 +11,6 @@
     <modules>
         <module>demo-dependencies</module>
         <module>demo-microservice-starter</module>
-        <module>demo-client-starter</module>
         <module>demo</module>
         <module>demo-sccb</module>
         <module>demo-full</module>
