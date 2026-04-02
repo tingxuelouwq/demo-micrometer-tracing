@@ -60,12 +60,6 @@
                 <artifactId>demo-microservice-starter</artifactId>
                 <version>${demo.version}</version>
             </dependency>
-
-            <dependency>
-                <groupId>com.kevin</groupId>
-                <artifactId>demo-client-starter</artifactId>
-                <version>${demo.version}</version>
-            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
