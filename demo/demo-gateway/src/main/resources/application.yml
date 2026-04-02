@@ -12,18 +12,22 @@ spring:
             - id: demo-echo-service
               uri: lb://demo-echo-service
               predicates:
-                - Path=/api/v1/api/echo/**
+                - Path=/echo-producer/api/echo/**
               filters:
-                - StripPrefix=2
+                - StripPrefix=1
             - id: demo-user-service
               uri: lb://demo-user-service
               predicates:
-                - Path=/api/v1/api/users/**
+                - Path=/user-producer/api/users/**
               filters:
-                - StripPrefix=2
+                - StripPrefix=1
             - id: demo-consumer-service
               uri: lb://demo-consumer-service
               predicates:
                 - Path=/api/v1/consumer/**
               filters:
                 - StripPrefix=3
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log

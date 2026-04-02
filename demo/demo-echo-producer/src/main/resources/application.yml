@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: demo-echo-service
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log

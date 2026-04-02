@@ -9,3 +9,7 @@ spring:
     serviceclient:
       demo-echo-service:
         base-url: lb://demo-echo-service
+
+logging:
+  file:
+    name: logs/${spring.application.name}.log
