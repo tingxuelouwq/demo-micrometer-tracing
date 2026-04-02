@@ -1,4 +1,4 @@
-package com.kevin.demo.micro.common.logging;
+package com.kevin.demo.microservice.starter.logging;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.AppenderBase;

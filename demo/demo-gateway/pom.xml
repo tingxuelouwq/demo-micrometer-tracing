@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.kevin</groupId>
-            <artifactId>demo-microservice-common-starter</artifactId>
+            <artifactId>demo-microservice-starter</artifactId>
         </dependency>
 
         <!-- NEW Spring Cloud Gateway for Boot 4.x -->

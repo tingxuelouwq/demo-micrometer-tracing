@@ -1,3 +1,3 @@
-com.kevin.demo.micro.common.autoconfigure.YamlAutoConfiguration
-com.kevin.demo.micro.common.autoconfigure.TracingConfiguration
-com.kevin.demo.micro.common.autoconfigure.CircuitBreakerConfiguration
+com.kevin.demo.microservice.starter.autoconfigure.YamlAutoConfiguration
+com.kevin.demo.microservice.starter.autoconfigure.TracingConfiguration
+com.kevin.demo.microservice.starter.autoconfigure.CircuitBreakerConfiguration

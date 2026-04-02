@@ -1,23 +1,22 @@
-package com.kevin.demo.micro.common.autoconfigure;
+package com.kevin.demo.client.starter;
 
+import com.kevin.demo.client.starter.echo.EchoClient;
 import org.springframework.beans.factory.config.YamlPropertiesFactoryBean;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.core.io.support.EncodedResource;
 import org.springframework.core.io.support.PropertySourceFactory;
+import org.springframework.web.service.registry.ImportHttpServices;
 
 import java.io.IOException;
 import java.util.Properties;
 
-/**
- *
- * @author 王琪
- * @since 2026/4/1 15:57
- */
 @AutoConfiguration
-@PropertySource(value = "classpath:application-microservice-starter.yml", factory = YamlAutoConfiguration.YamlPropertySourceFactory.class)
-public class YamlAutoConfiguration {
+@PropertySource(value = "classpath:application-client-starter.yml", factory = ClientAutoConfiguration.YamlPropertySourceFactory.class)
+@ImportHttpServices(group = "demo-echo-service", types = { EchoClient.class })
+//@ImportHttpServices(group = "demo-user-service", types = { UserClient.class })
+public class ClientAutoConfiguration {
 
     public static class YamlPropertySourceFactory implements PropertySourceFactory {
         @Override

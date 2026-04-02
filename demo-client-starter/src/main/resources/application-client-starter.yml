@@ -1,0 +1,9 @@
+# ==================== 客户端声明 ====================
+spring:
+  http:
+    clients:
+      connect-timeout: 1s
+      read-timeout: 2s
+    serviceclient:
+      demo-echo-service:
+        base-url: lb://demo-echo-service

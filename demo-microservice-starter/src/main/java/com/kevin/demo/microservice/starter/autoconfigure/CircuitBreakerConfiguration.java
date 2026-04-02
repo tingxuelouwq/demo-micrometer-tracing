@@ -1,4 +1,4 @@
-package com.kevin.demo.micro.common.autoconfigure;
+package com.kevin.demo.microservice.starter.autoconfigure;
 
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;

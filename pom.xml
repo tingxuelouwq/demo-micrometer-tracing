@@ -10,7 +10,7 @@
 
     <modules>
         <module>demo-dependencies</module>
-        <module>demo-microservice-common-starter</module>
+        <module>demo-microservice-starter</module>
         <module>demo-client-starter</module>
         <module>demo</module>
         <module>demo-sccb</module>

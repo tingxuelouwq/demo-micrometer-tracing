@@ -57,7 +57,7 @@
             <!-- 框架 Starters (硬编码版本，避免子项目继承时 ${project.version} 解析错误) -->
             <dependency>
                 <groupId>com.kevin</groupId>
-                <artifactId>demo-microservice-common-starter</artifactId>
+                <artifactId>demo-microservice-starter</artifactId>
                 <version>${demo.version}</version>
             </dependency>
 
