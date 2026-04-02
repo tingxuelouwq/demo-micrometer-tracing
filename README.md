@@ -127,7 +127,6 @@ mvn spring-boot:run
 
 - [Spring Boot 4.0 文档](https://docs.spring.io/spring-boot/docs/4.0.2/reference/html/)
 - [Spring Cloud 2025.1.1 发布说明](https://github.com/spring-cloud/spring-cloud-release/wiki/Spring-Cloud-2025.1-Release-Notes) 
-- [Resilience4j 官方文档](https://resilience4j.readme.io/)
 
 ## 📝 更新日志
 
