@@ -39,12 +39,13 @@ demo-microservice-framework/
 - **职责**: 
   - 统一定义所有依赖版本号
   - 管理 Spring Boot、Spring Cloud 等核心版本
+  - 业务应用继承此 POM
 
 ### 2. demo-microservice-starter
 - **定位**: 微服务基础设施
 - **职责**：  
   - 统一封装公共配置
-  - 业务应用继承此 POM
+  - 业务应用依赖此 JAR
 - **功能**:
   - 统一日志配置 (Logback/Log4j2)
   - 统一异常处理
