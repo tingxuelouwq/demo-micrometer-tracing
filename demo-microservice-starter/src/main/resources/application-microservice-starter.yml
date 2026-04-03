@@ -39,11 +39,7 @@ tracing:
       default-topic: ${TRACING_KAFKA_TOPIC:zipkin}
   # 过滤指定端点的链路追踪，避免产生大量无意义的span
   filter:
-    exclude-paths:
-      - /actuator
-      - /health
-      - /readyz
-      - /livez
+    exclude-paths: /actuator,/health,/readyz,/livez
 # 业务日志kafka配置
 logging:
   kafka:
