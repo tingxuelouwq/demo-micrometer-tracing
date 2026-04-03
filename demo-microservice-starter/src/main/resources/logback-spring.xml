@@ -41,10 +41,18 @@
         </encoder>
     </appender>
 
+    <!-- 在 KAFKA appender 外包裹 AsyncAppender -->
+    <appender name="ASYNC_KAFKA" class="ch.qos.logback.classic.AsyncAppender">
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>  <!-- 不丢弃，确保日志完整性 -->
+        <neverBlock>true</neverBlock>  <!-- 队列满时不阻塞业务线程 -->
+        <appender-ref ref="KAFKA"/>
+    </appender>
+
     <root level="INFO">
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
-        <appender-ref ref="KAFKA" />
+        <appender-ref ref="ASYNC_KAFKA" />  <!-- 使用异步包装 -->
     </root>
 
 </configuration>

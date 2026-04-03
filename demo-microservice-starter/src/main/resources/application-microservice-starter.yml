@@ -31,7 +31,21 @@ management:
       zipkin:
         endpoint: http://${ZIPKIN_SERVER:localhost:9411}/api/v2/spans
 
+# 链路追踪kafka配置
+tracing:
+  kafka:
+    bootstrap-servers: ${TRACING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    template:
+      default-topic: ${TRACING_KAFKA_TOPIC:zipkin}
+  # 过滤指定端点的链路追踪，避免产生大量无意义的span
+  filter:
+    exclude-paths:
+      - /actuator
+      - /health
+      - /readyz
+      - /livez
+# 业务日志kafka配置
 logging:
   kafka:
     bootstrap-servers: ${LOGGING_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
-    topic: ${LOGGING_KAFKA_TOPIC:zipkin}
+    topic: ${LOGGING_KAFKA_TOPIC:app-logs}

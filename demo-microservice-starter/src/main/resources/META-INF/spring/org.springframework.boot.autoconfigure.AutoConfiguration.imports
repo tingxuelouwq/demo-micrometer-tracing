@@ -1,3 +1,4 @@
 com.kevin.demo.microservice.starter.autoconfigure.YamlAutoConfiguration
-com.kevin.demo.microservice.starter.autoconfigure.TracingConfiguration
+com.kevin.demo.microservice.starter.autoconfigure.BraveTracingConfiguration
+com.kevin.demo.microservice.starter.autoconfigure.KafkaTracingConfiguration
 com.kevin.demo.microservice.starter.autoconfigure.CircuitBreakerConfiguration
