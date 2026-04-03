@@ -45,6 +45,7 @@ public class KafkaTracingConfiguration {
         return new KafkaProperties();
     }
 
+    @Primary
     @Bean(destroyMethod = "close")
     public BytesMessageSender zipkinKafkaSender(
             @Qualifier("tracingKafkaProperties") KafkaProperties props) {
