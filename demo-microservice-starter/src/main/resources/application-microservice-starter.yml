@@ -4,11 +4,12 @@ spring:
       host: ${CONSUL_HOST:localhost}
       port: ${CONSUL_PORT:8500}
       discovery:
+        prefer-ip-address: false
+        hostname: ${SERVICE_IP:localhost}
         acl-token: ${CONSUL_TOKEN:5c72f559-9ef9-48b4-99c7-23e9092f9a0f}
         service-name: ${spring.application.name}
-        instance-id: ${spring.application.name}_${spring.cloud.client.ip-address}_${server.port}
+        instance-id: ${spring.application.name}_${spring.cloud.consul.discovery.hostname}_${server.port}
         health-check-interval: 10s
-        prefer-ip-address: true
         query-passing: true
     loadbalancer:
       retry:
